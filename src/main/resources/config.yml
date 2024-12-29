@@ -1,0 +1,105 @@
+messages:
+  help:
+    - "&f ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇"
+    - "&8- &e/seller &7[Открыть меню скупщика]"
+    - "&8- &e/seller help &7[Помощь]"
+    - "&8-_"
+    - "&8- &e/seller admin boost (player)"
+    - "&8- &7| set (double) &7[Установить буст]"
+    - "&8- &7| add (double) &7[Добавить буст]"
+    - "&8- &7| take (double) &7[Убавить буст]"
+    - "&8-_"
+    - "&8- &e/seller admin items (player)"
+    - "&8- &7| set (int) &7[Установить кол-во проданных предметов]"
+    - "&8- &7| add (int) &7[Добавить к кол-во проданных предметов]"
+    - "&8- &7| take (int) &7[Убавить к кол-во проданных предметов]"
+    - "&8-_"
+    - "&8- &e/seller admin autosell (player)"
+    - "&8- &7| give &7[Выдать доступ к авто-продаже предметов]"
+    - "&8- &7| remove&7[Убрать доступ к авто-продаже предметов]"
+    - "&8-_"
+    - "&8- &e/seller admin reload &7[Перезагрузка конфига]"
+    - "&f ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇"
+  have_no_perms: "&8 ┃&f У вас недостаточно прав на это"
+  config_reload: "&8 ┃&f Конфиг перезагружен"
+  number_format_error: "&8 ┃&f Неверное число: {object}"
+  null_player_error: "&8 ┃&f Игрок {object} не найден"
+  balance_error: "&8 ┃&f У вас недостаточно рублей &7{object}/{price}"
+  max_boost_error: "&8 ┃&f Вы достигли последнего буста &7x{object}"
+
+  # !amount кол-во предметов
+  # !profit полученная сумма
+  # !! Работает только в этом сообщении !!
+  sold: "&8 ┃&f Вы продали &e!amount &fпредметов за &a!profit &fмонет"
+  buy_boost: "&8 ┃&f Вы купили буст &3x!boost"
+  buy_autosell: "&8 ┃&f Вы купили доступ к авто-продаже предметов"
+
+  boost_modify: "&8 ┃&f Установлен на &e!amount &fбуст &e!player"
+  items_modify: "&8 ┃&f Установлено на &e!amount &fпроданные предметы &e!player"
+
+  autosell_remove: "&8 ┃&f Убран доступ к авто-продаже предметов для &e!player"
+  autosell_give: "&8 ┃&f Выдан доступ к авто-продаже предметов для &e!player"
+
+sell_items:
+  # Айди предмета: Цена за штуку
+
+  SUGAR_CANE: 5
+  CACTUS: 8
+  BAMBOO: 2
+  CHORUS_FLOWER: 12
+  COCOA_BEANS: 5
+  NETHER_WART: 9
+  KELP: 2
+
+  COAL: 4
+  IRON_INGOT: 8
+  GOLD_INGOT: 14
+  LAPIS_LAZULI: 9
+  DIAMOND: 50
+  EMERALD: 90
+  NETHERITE_SCRAP: 140
+
+  DIRT: 1
+  COBBLESTONE: 2
+  REDSTONE: 5
+  NETHER_BRICKS: 6
+  BLACKSTONE: 3
+  PURPUR_BLOCK: 7
+  END_STONE: 4
+
+  BONE: 4
+  SHULKER_SHELL: 50
+  HONEY_BOTTLE: 25
+  GUNPOWDER: 6
+  GLOWSTONE_DUST: 8
+  ROTTEN_FLESH: 3
+  BLAZE_ROD: 7
+
+sounds:
+  # none - что-бы отключить
+  onSellItems: ENTITY_VILLAGER_YES
+  onAutoSellItems: ENTITY_EXPERIENCE_ORB_PICKUP
+  onBuyAnything: ENTITY_VILLAGER_YES
+  onSwapGui: ENTITY_ARROW_HIT_PLAYER
+  onNotEnoughVault: ENTITY_VILLAGER_NO
+  onSwapAutoSell: ENTITY_ARROW_SHOOT
+
+auto-sell:
+  cost: 1000 # Установите на 0 что-бы сделать бесплатным
+  message: true
+
+  # Валюты:
+  # Vault
+  # PlayerPoints
+  # Items - Кол-во проданных предметов
+  value: PlayerPoints
+
+boosts:
+  # Буст - Цена улучшение в рублях до следующей цены
+  # Пример: x1, x1.1, x1.2 ... x1.9 - 5000 рублей
+  #         x2, x2.1, x2.2 ... x2.9 - 10000 рублей
+  2: 5000
+  3: 10000
+  4: 20000
+
+  value: PlayerPoints

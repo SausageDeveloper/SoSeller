@@ -1,0 +1,19 @@
+name: SoSeller
+version: '${project.version}'
+main: org.sausagedev.soseller.SoSeller
+api-version: '1.16'
+load: STARTUP
+depend:
+  - Vault
+  - NBTAPI
+  - PlayerPoints
+  - PlaceholderAPI
+loadbefore:
+  - Vault
+commands:
+  soseller:
+    aliases:
+      - seller
+      - sell
+      - buyer
+      - offer
