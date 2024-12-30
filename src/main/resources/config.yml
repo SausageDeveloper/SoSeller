@@ -91,8 +91,9 @@ auto-sell:
   # Валюты:
   # Vault
   # PlayerPoints
+  # CoinsEngine:название валюты (1.20+)
   # Items - Кол-во проданных предметов
-  value: PlayerPoints
+  value: Vault
 
 boosts:
   # Буст - Цена улучшение в рублях до следующей цены
@@ -102,4 +103,4 @@ boosts:
   3: 10000
   4: 20000
 
-  value: PlayerPoints
+  value: Vault

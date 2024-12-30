@@ -30,8 +30,6 @@ import java.util.UUID;
  */
 public class SkullCreator {
 
-	private SkullCreator() {}
-
 	private static boolean warningPosted = false;
 
 	// some reflection stuff to be used when setting a skull's profile

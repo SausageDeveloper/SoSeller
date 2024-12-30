@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.gui.MainMenu;
 import org.sausagedev.soseller.utils.SellerUtils;
-import org.sausagedev.soseller.utils.SkullCreator;
 import org.sausagedev.soseller.utils.Utils;
 
 import java.util.List;

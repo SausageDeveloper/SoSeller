@@ -2,7 +2,6 @@ package org.sausagedev.soseller.utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.sausagedev.soseller.SoSeller;
 
 import java.util.List;

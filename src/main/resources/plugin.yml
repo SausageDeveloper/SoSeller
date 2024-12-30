@@ -3,11 +3,13 @@ version: '${project.version}'
 main: org.sausagedev.soseller.SoSeller
 api-version: '1.16'
 load: STARTUP
+softdepend:
+  - PlayerPoints
+  - PlaceholderAPI
+  - CoinsEngine
 depend:
   - Vault
   - NBTAPI
-  - PlayerPoints
-  - PlaceholderAPI
 loadbefore:
   - Vault
 commands:

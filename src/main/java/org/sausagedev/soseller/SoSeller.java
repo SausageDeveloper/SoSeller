@@ -50,7 +50,10 @@ public final class SoSeller extends JavaPlugin {
     public void enable() {
         if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")) {
             this.ppAPI = PlayerPoints.getInstance().getAPI();
-            getLogger().info("PlayerPoints включнён");
+            getLogger().info("PlayerPoints подключён");
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("CoinsEngine")) {
+            getLogger().info("CoinsEngine подключён");
         }
         SellerUtils sellerUtils = new SellerUtils(this);
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {

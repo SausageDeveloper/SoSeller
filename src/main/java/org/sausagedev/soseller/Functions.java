@@ -8,6 +8,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.sausagedev.soseller.utils.SellerUtils;
 import org.sausagedev.soseller.utils.Utils;
+import su.nightexpress.coinsengine.api.CoinsEngineAPI;
+import su.nightexpress.coinsengine.api.currency.Currency;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -92,6 +94,16 @@ public class Functions {
         UUID uuid = p.getUniqueId();
         String vault = main.getConfig().getString("boosts.value", "vault");
         int balance = 0;
+
+        if (vault.toLowerCase().contains("coinsengine:")) {
+            String id = vault.toLowerCase().replace("coinsengine:", "");
+            Currency currency = CoinsEngineAPI.getCurrency(id);
+            if (currency == null) {
+                p.sendMessage(utils.convert("&8 ┃&f Валюта &c" + id + " &fне существует"));
+                return;
+            }
+            balance = (int) CoinsEngineAPI.getBalance(p, currency);
+        }
         if (vault.equalsIgnoreCase("playerpoints")) balance = main.getPP().look(uuid);
         if (vault.equalsIgnoreCase("vault")) balance = (int) main.getEconomy().getBalance(p);
         if (vault.equalsIgnoreCase("items")) balance = sellerUtils.getItems(uuid);
@@ -124,6 +136,15 @@ public class Functions {
             return;
         }
 
+        if (vault.toLowerCase().contains("coinsengine:")) {
+            String id = vault.toLowerCase().replace("coinsengine:", "");
+            Currency currency = CoinsEngineAPI.getCurrency(id);
+            if (currency == null) {
+                p.sendMessage(utils.convert("&8 ┃&f Валюта &c" + id + " &fне существует"));
+                return;
+            }
+            CoinsEngineAPI.removeBalance(p, currency, price);
+        }
         if (vault.equalsIgnoreCase("playerpoints")) main.getPP().take(uuid, price);
         if (vault.equalsIgnoreCase("vault")) main.getEconomy().withdrawPlayer(p, price);
         if (vault.equalsIgnoreCase("items")) sellerUtils.setItems(uuid, balance - price);
@@ -141,6 +162,16 @@ public class Functions {
         UUID uuid = p.getUniqueId();
         String vault = main.getConfig().getString("boosts.value", "vault");
         int balance = 0;
+
+        if (vault.toLowerCase().contains("coinsengine:")) {
+            String id = vault.toLowerCase().replace("coinsengine:", "");
+            Currency currency = CoinsEngineAPI.getCurrency(id);
+            if (currency == null) {
+                p.sendMessage(utils.convert("&8 ┃&f Валюта &c" + id + " &fне существует"));
+                return;
+            }
+            balance = (int) CoinsEngineAPI.getBalance(p, currency);
+        }
         if (vault.equalsIgnoreCase("playerpoints")) balance = main.getPP().look(uuid);
         if (vault.equalsIgnoreCase("vault")) balance = (int) main.getEconomy().getBalance(p);
         if (vault.equalsIgnoreCase("items")) balance = sellerUtils.getItems(uuid);
@@ -156,6 +187,15 @@ public class Functions {
             return;
         }
 
+        if (vault.toLowerCase().contains("coinsengine:")) {
+            String id = vault.toLowerCase().replace("coinsengine:", "");
+            Currency currency = CoinsEngineAPI.getCurrency(id);
+            if (currency == null) {
+                p.sendMessage(utils.convert("&8 ┃&f Валюта &c" + id + " &fне существует"));
+                return;
+            }
+            CoinsEngineAPI.removeBalance(p, currency, price);
+        }
         if (vault.equalsIgnoreCase("playerpoints")) main.getPP().take(uuid, price);
         if (vault.equalsIgnoreCase("vault")) main.getEconomy().withdrawPlayer(p, price);
         if (vault.equalsIgnoreCase("items")) sellerUtils.setItems(uuid, balance - price);

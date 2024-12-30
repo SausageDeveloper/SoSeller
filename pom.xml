@@ -6,7 +6,7 @@
 
   <groupId>org.sausagedev</groupId>
   <artifactId>SoSeller</artifactId>
-  <version>1.8</version>
+  <version>1.8.1</version>
   <packaging>jar</packaging>
 
   <name>SoSeller</name>
@@ -37,6 +37,27 @@
             <goals>
               <goal>shade</goal>
             </goals>
+              <configuration>
+                  <filters>
+                      <filter>
+                          <artifact>*:*</artifact>
+                          <excludes>
+                              <exclude>META-INF/*.SF</exclude>
+                              <exclude>META-INF/*.DSA</exclude>
+                              <exclude>META-INF/*.RSA</exclude>
+                              <exclude>META-INF/MANIFEST.MF</exclude>
+                              <exclude>META-INF/versions/9/module-info.class</exclude>
+                              <exclude>lang/messages_cn.yml</exclude>
+                          </excludes>
+                      </filter>
+                      <filter>
+                          <artifact>it.unimi.dsi:fastutil</artifact>
+                          <excludes>
+                              <exclude>it/unimi/dsi/fastutil/**</exclude>
+                          </excludes>
+                      </filter>
+                  </filters>
+              </configuration>
           </execution>
         </executions>
       </plugin>
@@ -79,6 +100,11 @@
           <id>minecraft-repo</id>
           <url>https://libraries.minecraft.net/</url>
       </repository>
+      <repository>
+          <id>nightexpress-releases</id>
+          <name>NightExpress's Repository</name>
+          <url>https://repo.nightexpressdev.com/releases</url>
+      </repository>
   </repositories>
 
   <dependencies>
@@ -116,6 +142,12 @@
           <groupId>com.mojang</groupId>
           <artifactId>authlib</artifactId>
           <version>1.5.25</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>su.nightexpress.coinsengine</groupId>
+          <artifactId>CoinsEngine</artifactId>
+          <version>2.4.1</version>
           <scope>provided</scope>
       </dependency>
   </dependencies>
