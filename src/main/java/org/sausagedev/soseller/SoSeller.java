@@ -14,6 +14,7 @@ import org.sausagedev.soseller.listeners.FuctionsListener;
 import org.sausagedev.soseller.listeners.MenuListener;
 import org.sausagedev.soseller.utils.Config;
 import org.sausagedev.soseller.utils.SellerUtils;
+import org.sausagedev.soseller.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,6 +79,16 @@ public final class SoSeller extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AutoSellListener(functions, sellerUtils, this), this);
         saveDefaultConfig();
         createDataBase();
+
+        if (getConfig().getBoolean("check_update")) {
+            Utils.checkUpdates(this, version -> {
+                if (getDescription().getVersion().equals(version)) {
+                    getLogger().info("Вы используете последнюю версию");
+                } else {
+                    getLogger().info("Найдена новая версия (" + version + ")");
+                }
+            });
+        }
     }
 
     @Override
