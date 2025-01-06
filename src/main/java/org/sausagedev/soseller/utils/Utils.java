@@ -1,9 +1,16 @@
 package org.sausagedev.soseller.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.sausagedev.soseller.SoSeller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,5 +54,17 @@ public class Utils {
             return false;
         }
         return true;
+    }
+
+    public static void checkUpdates(SoSeller plugin, Consumer<String> consumer) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new URL("https://raw.githubusercontent.com/SausageDeveloper/SoSeller/master/VERSION")
+                            .openStream()))) {
+                consumer.accept(reader.readLine().trim());
+            } catch (IOException ex) {
+                plugin.getLogger().warning("Не удалось проверить наличие обновлений: " + ex.getMessage());
+            }
+        });
     }
 }
