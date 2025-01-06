@@ -28,14 +28,27 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
         if (!args[0].equalsIgnoreCase("admin")) return null;
         if (args.length == 2) {
             list.add("boost");
+            list.add("globalboost");
             list.add("items");
             list.add("autosell");
+            return list;
+        }
+        if (args.length == 3 && args[1].equalsIgnoreCase("globalboost")) {
+            list.add("set");
+            list.add("add");
+            list.add("take");
             return list;
         }
         if (args.length == 4) {
             if (args[1].equalsIgnoreCase("autosell")) {
                 list.add("give");
                 list.add("remove");
+                return list;
+            }
+            if (args[1].equalsIgnoreCase("globalboost")) {
+                list.add("0.1");
+                list.add("0.5");
+                list.add("1.0");
                 return list;
             }
             list.add("set");
@@ -45,6 +58,7 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
         }
         if (args.length == 5) {
             if (args[1].equalsIgnoreCase("autosell")) return null;
+            if (args[1].equalsIgnoreCase("globalboost")) return null;
             if (args[1].equalsIgnoreCase("boost")) {
                 list.add("0.1");
                 list.add("0.5");

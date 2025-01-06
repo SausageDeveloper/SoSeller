@@ -56,8 +56,7 @@ public class MenuListener implements Listener {
         for (ItemStack item : inv.getContents()) {
             if (isDefault(item)) continue;
             NBTItem nbt = new NBTItem(item);
-            String tag = nbt.getString("SoSeller");
-            if (tag.equals("seller")) return true;
+            if (nbt.hasTag("SoSeller")) return true;
         }
         return false;
     }

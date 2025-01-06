@@ -1,45 +1,49 @@
-messages:
-  help:
-    - "&f ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇"
-    - "&8- &e/seller &7[Открыть меню скупщика]"
-    - "&8- &e/seller help &7[Помощь]"
-    - "&8-_"
-    - "&8- &e/seller admin boost (player)"
-    - "&8- &7| set (double) &7[Установить буст]"
-    - "&8- &7| add (double) &7[Добавить буст]"
-    - "&8- &7| take (double) &7[Убавить буст]"
-    - "&8-_"
-    - "&8- &e/seller admin items (player)"
-    - "&8- &7| set (int) &7[Установить кол-во проданных предметов]"
-    - "&8- &7| add (int) &7[Добавить к кол-во проданных предметов]"
-    - "&8- &7| take (int) &7[Убавить к кол-во проданных предметов]"
-    - "&8-_"
-    - "&8- &e/seller admin autosell (player)"
-    - "&8- &7| give &7[Выдать доступ к авто-продаже предметов]"
-    - "&8- &7| remove&7[Убрать доступ к авто-продаже предметов]"
-    - "&8-_"
-    - "&8- &e/seller admin reload &7[Перезагрузка конфига]"
-    - "&f ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇"
-  have_no_perms: "&8 ┃&f У вас недостаточно прав на это"
-  config_reload: "&8 ┃&f Конфиг перезагружен"
-  number_format_error: "&8 ┃&f Неверное число: {object}"
-  null_player_error: "&8 ┃&f Игрок {object} не найден"
-  balance_error: "&8 ┃&f У вас недостаточно рублей &7{object}/{price}"
-  max_boost_error: "&8 ┃&f Вы достигли последнего буста &7x{object}"
+# Настройка языка сообщений (en, ru)
+lang: ru
 
-  # !amount кол-во предметов
-  # !profit полученная сумма
-  # !! Работает только в этом сообщении !!
-  sold: "&8 ┃&f Вы продали &e!amount &fпредметов за &a!profit &fмонет"
-  buy_boost: "&8 ┃&f Вы купили буст &3x!boost"
-  buy_autosell: "&8 ┃&f Вы купили доступ к авто-продаже предметов"
+# Настройка цены авто-скупки
+auto-sell:
+  cost: 1000 # Установите на 0 что-бы сделать бесплатным
+  message: true
 
-  boost_modify: "&8 ┃&f Установлен на &e!amount &fбуст &e!player"
-  items_modify: "&8 ┃&f Установлено на &e!amount &fпроданные предметы &e!player"
+  # Валюты:
+  # Vault
+  # PlayerPoints
+  # CoinsEngine:название валюты (1.20+)
+  # Items - Кол-во проданных предметов
+  value: Vault
 
-  autosell_remove: "&8 ┃&f Убран доступ к авто-продаже предметов для &e!player"
-  autosell_give: "&8 ┃&f Выдан доступ к авто-продаже предметов для &e!player"
 
+# Буст для всех игроков поверх собственных
+global_boost: 1.0
+
+# Настройка цен за бусты
+boosts:
+  # Буст - Цена улучшение в рублях до следующей цены
+  # Пример: x1, x1.1, x1.2 ... x1.9 - 5000 рублей
+  #         x2, x2.1, x2.2 ... x2.9 - 10000 рублей
+
+  2:
+    price: 5000
+    value: Vault
+  3:
+    price: 10000
+    value: Vault
+  4:
+    price: 20000
+    value: Vault
+
+# Настройка звуков при опридилённых действиях
+sounds:
+  # none - что-бы отключить
+  onSellItems: ENTITY_VILLAGER_YES # При продаже всех предметов
+  onAutoSellItems: ENTITY_EXPERIENCE_ORB_PICKUP # При авто-скупке предметов
+  onBuyAnything: ENTITY_VILLAGER_YES # При покупки чего-либо
+  onSwapGui: ENTITY_ARROW_HIT_PLAYER # При переходе в другие меню скупщика
+  onNotEnoughVault: ENTITY_VILLAGER_NO # При недостатке валюты для покупки чего-либо
+  onSwapAutoSell: ENTITY_ARROW_SHOOT # При переключении авто-скупки
+
+# Настройка цен для продажи предметов
 sell_items:
   # Айди предмета: Цена за штуку
 
@@ -74,33 +78,3 @@ sell_items:
   GLOWSTONE_DUST: 8
   ROTTEN_FLESH: 3
   BLAZE_ROD: 7
-
-sounds:
-  # none - что-бы отключить
-  onSellItems: ENTITY_VILLAGER_YES
-  onAutoSellItems: ENTITY_EXPERIENCE_ORB_PICKUP
-  onBuyAnything: ENTITY_VILLAGER_YES
-  onSwapGui: ENTITY_ARROW_HIT_PLAYER
-  onNotEnoughVault: ENTITY_VILLAGER_NO
-  onSwapAutoSell: ENTITY_ARROW_SHOOT
-
-auto-sell:
-  cost: 1000 # Установите на 0 что-бы сделать бесплатным
-  message: true
-
-  # Валюты:
-  # Vault
-  # PlayerPoints
-  # CoinsEngine:название валюты (1.20+)
-  # Items - Кол-во проданных предметов
-  value: Vault
-
-boosts:
-  # Буст - Цена улучшение в рублях до следующей цены
-  # Пример: x1, x1.1, x1.2 ... x1.9 - 5000 рублей
-  #         x2, x2.1, x2.2 ... x2.9 - 10000 рублей
-  2: 5000
-  3: 10000
-  4: 20000
-
-  value: Vault

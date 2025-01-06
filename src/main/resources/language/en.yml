@@ -1,0 +1,120 @@
+help:
+  - "&f ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇"
+  - "&8- &e/seller &7[Open seller menu]"
+  - "&8- &e/seller help &7[Help]"
+  - "&8-_"
+  - "&8- &e/seller admin boost (player)"
+  - "&8- &7| set (double) &7[Set boost]"
+  - "&8- &7| add (double) &7[Add boost]"
+  - "&8- &7| take (double) &7[Take boost]"
+  - "&8-_"
+  - "&8- &e/seller admin globalboost"
+  - "&8- &7| set (double) &7[Set global boost]"
+  - "&8- &7| add (double) &7[Add global boost]"
+  - "&8- &7| take (double) &7[Take global boost]"
+  - "&8-_"
+  - "&8- &e/seller admin items (player)"
+  - "&8- &7| set (int) &7[Set amount of sold items]"
+  - "&8- &7| add (int) &7[Add to amount of sold items]"
+  - "&8- &7| take (int) &7[Take from amount of sold items]"
+  - "&8-_"
+  - "&8- &e/seller admin auto-sell (player)"
+  - "&8- &7| give &7[Allow access to auto-sale of items]"
+  - "&8- &7| remove &7[Remove access to auto-sale of items]"
+  - "&8-_"
+  - "&8- &e/seller admin reload &7[Reloading the config]"
+  - "&f ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇"
+
+# Message when the config is reloaded
+config_reload: "&8 ┃&f Config reloaded"
+
+
+# <---------------------------------->
+# <---------------------------------->
+# <--------- Error Messages --------->
+# <---------------------------------->
+# <---------------------------------->
+
+# Message when player permissions are denied for certain actions
+have_no_perms: "&8 ┃&f You don't have enough rights to do this."
+
+# Message when a number is specified incorrectly
+# {object} - Specified number
+number_format_error: "&8 ┃&f Invalid number: {object}"
+
+# Message when a search for a player with a specified nickname fails
+# {object} - Specified nickname
+null_player_error: "&8 ┃&f Player {object} not found"
+
+# Message when you fail to buy something due to lack of balance
+# {object} - Your balance | {price} - Price
+balance_error: "&8 ┃&f You don't have enough rubles &7{object}/{price}"
+
+# Message when the last boost is reached
+# {object} - Last Boost
+max_boost_error: "&8 ┃&f You have reached the last boost &7x{object}"
+
+
+# <----------------------------------------------->
+# <----------------------------------------------->
+# <--------- Boost manipulation messages --------->
+# <----------------------------------------------->
+# <----------------------------------------------->
+
+# Message when buying a boost
+# {boost} - New boost after purchase
+buy_boost: "&8 ┃&f You bought a boost &3x{boost}"
+
+# Message when buying access to auto-buying items
+buy_autosell: "&8 ┃&f You have bought access to auto-sell items."
+
+# Message when changing the amount of boost for someone
+# {player} - Nick of the player to whom the change was applied
+# {amount} - Last value of boost
+boost_modify: "&8 ┃&f Set to &e{amount} &fboost &e{player}"
+
+# Message when changing the amount of global boost
+# {amount} - Last value of global boost
+global_boost_modify: "&8 ┃&f Set to &e{amount} &fglobal boost"
+
+
+# <---------------------------------------------->
+# <---------------------------------------------->
+# <--------- Item manipulation messages --------->
+# <---------------------------------------------->
+# <---------------------------------------------->
+
+# Message when changing the number of items sold for someone
+# {player} - Nick of the player to whom the change was applied
+items_modify: "&8 ┃&f Set to &e{amount} &f sold items &e{player}"
+
+# Message when selling items to a fence
+# {profit} - Amount received on sale
+sold: "&8 ┃&f You sold &e{amount} &f items for &a{profit} &fmonetary"
+
+# Translate materials id
+# ( for name of icon with tag "load_items" )
+materials:
+  # Example
+  DIAMOND: "Diamond"
+  EMERALD: "Emerald"
+  IRON_INGOT: "Iron ingot"
+  GOLD_INGOT: "Gold ingot"
+  COAL: "Coal"
+  LAPIS_LAZULI: "Lapis lazuli"
+  NETHERITE_SCRAP: "Netherite scrap"
+
+
+# <---------------------------------------------------->
+# <---------------------------------------------------->
+# <--------- Reports of auto-buy manipulation --------->
+# <---------------------------------------------------->
+# <---------------------------------------------------->
+
+# Message when auto-buy access is removed for someone else
+# {player} - Nick of the player to whom the change was applied
+auto-sell_remove: "&8 ┃&f Removed access to auto-sell items for &e{player}"
+
+# Message when auto-sell access is granted to anyone
+# {player} - Nick of the player to whom the change was applied
+auto-sell_give: "&8 ┃&f Granted access to auto-sell items to &e{player}"

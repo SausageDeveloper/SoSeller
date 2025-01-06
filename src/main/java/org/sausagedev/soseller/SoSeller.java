@@ -12,8 +12,8 @@ import org.sausagedev.soseller.commands.TabCompleter;
 import org.sausagedev.soseller.listeners.AutoSellListener;
 import org.sausagedev.soseller.listeners.FuctionsListener;
 import org.sausagedev.soseller.listeners.MenuListener;
+import org.sausagedev.soseller.utils.Config;
 import org.sausagedev.soseller.utils.SellerUtils;
-import org.sausagedev.soseller.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +45,7 @@ public final class SoSeller extends JavaPlugin {
             return;
         }
         enable();
+        Config.setMain(this);
     }
 
     public void enable() {
@@ -69,9 +70,8 @@ public final class SoSeller extends JavaPlugin {
                 throw new RuntimeException(e);
             }
         }
-        Utils utils = new Utils(this);
-        Functions functions = new Functions(this, utils, sellerUtils);
-        getCommand("soseller").setExecutor(new Commands(this, utils, sellerUtils));
+        Functions functions = new Functions(this, sellerUtils);
+        getCommand("soseller").setExecutor(new Commands(this, sellerUtils));
         getCommand("soseller").setTabCompleter(new TabCompleter());
         getServer().getPluginManager().registerEvents(new FuctionsListener(this, functions), this);
         getServer().getPluginManager().registerEvents(new MenuListener(), this);

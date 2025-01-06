@@ -9,7 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.sausagedev.soseller.SoSeller;
-import org.sausagedev.soseller.gui.MainMenu;
+import org.sausagedev.soseller.gui.Menu;
+import org.sausagedev.soseller.utils.Config;
 import org.sausagedev.soseller.utils.SellerUtils;
 import org.sausagedev.soseller.utils.Utils;
 
@@ -18,12 +19,10 @@ import java.util.UUID;
 
 public class Commands implements CommandExecutor {
     private final SoSeller main;
-    private final Utils utils;
     private final SellerUtils sellerUtils;
 
-    public Commands(SoSeller main, Utils utils, SellerUtils sellerUtils) {
+    public Commands(SoSeller main, SellerUtils sellerUtils) {
         this.main = main;
-        this.utils = utils;
         this.sellerUtils = sellerUtils;
     }
 
@@ -31,14 +30,14 @@ public class Commands implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, @NotNull String[] args) {
         Player p = Bukkit.getPlayer(sender.getName());
         if (args.length == 0 && p != null) {
-            MainMenu mainMenu = new MainMenu(main, utils, sellerUtils);
-            mainMenu.open(p);
+            Menu menu = new Menu(main, sellerUtils);
+            menu.open(p, "main");
             return true;
         }
-        if (!utils.hasPerm(sender, "soseller.admin")) return true;
+        if (!Utils.hasPerm(sender, "soseller.admin")) return true;
         if (args[0].equalsIgnoreCase("help")) {
-            List<String> list = main.getConfig().getStringList("messages.help");
-            sender.sendMessage(utils.getStringByList(list));
+            List<String> list = Config.getMessages().getStringList("help");
+            sender.sendMessage(Utils.getStringByList(list));
             return true;
         }
         if (args[0].equalsIgnoreCase("reload")) {
@@ -49,6 +48,36 @@ public class Commands implements CommandExecutor {
         }
         if (args[0].equalsIgnoreCase("admin")) {
             if (args.length < 2) return true;
+            if (args[1].equalsIgnoreCase("globalboost")) {
+                if (args.length != 4) return true;
+                if (isNotDouble(args[3])) {
+                    String nullNumber = "&8 ┃&f Неверное число: {object}";
+                    sendMSG(sender, "number_format_error", nullNumber, args[3]);
+                    return true;
+                }
+                double n = Double.parseDouble(args[3]);
+                double globalBoost = main.getConfig().getDouble("global_boost", 1);
+                switch (args[2]) {
+                    case "set":
+                        main.getConfig().set("global_boost", n);
+                        break;
+                    case "add":
+                        main.getConfig().set("global_boost", globalBoost + n);
+                        break;
+                    case "take":
+                        double res = globalBoost - n;
+                        main.getConfig().set("global_boost", res < 1 ? 1 : res);
+                        break;
+                }
+                main.saveConfig();
+                main.reloadConfig();
+                globalBoost = main.getConfig().getDouble("global_boost", 1);
+                String setItems = "&8 ┃&f Установлен на &e{amount} &fглобальный буст";
+                String msg = Config.getMessages().getString("global_boost_modify", setItems);
+                msg = msg.replace("{amount}", String.valueOf(globalBoost));
+                msg = PlaceholderAPI.setPlaceholders(p, msg);
+                sender.sendMessage(Utils.convert(msg));
+            }
             if (args[1].equalsIgnoreCase("boost")) {
                 if (args.length != 5) return true;
                 Player t = Bukkit.getPlayer(args[2]);
@@ -73,17 +102,17 @@ public class Commands implements CommandExecutor {
                         sellerUtils.setBoost(uuid, boost + n);
                         break;
                     case "take":
-                        if (boost <= 1) return true;
-                        sellerUtils.setBoost(uuid, boost - n);
+                        double res = boost - n;
+                        sellerUtils.setBoost(uuid, res < 1 ? 1 : res);
                         break;
                 }
                 boost = sellerUtils.getBoost(uuid);
-                String setItems = "&8 ┃&f Установлен на &e!amount &fбуст &e!player";
-                String msg = main.getConfig().getString("messages.boost_modify", setItems);
-                msg = msg.replace("!player", t.getName());
-                msg = msg.replace("!amount", String.valueOf(boost));
+                String setItems = "&8 ┃&f Установлен на &e{amount} &fбуст &e{player}";
+                String msg = Config.getMessages().getString("boost_modify", setItems);
+                msg = msg.replace("{player}", t.getName());
+                msg = msg.replace("{amount}", String.valueOf(boost));
                 msg = PlaceholderAPI.setPlaceholders(p, msg);
-                sender.sendMessage(utils.convert(msg));
+                sender.sendMessage(Utils.convert(msg));
                 return true;
             }
             if (args[1].equalsIgnoreCase("items")) {
@@ -116,15 +145,15 @@ public class Commands implements CommandExecutor {
 
                 }
                 items = sellerUtils.getItems(uuid);
-                String setItems = "&8 ┃&f Установлено на &e!amount &fпроданные предметы &e!player";
-                String msg = main.getConfig().getString("messages.items_modify", setItems);
-                msg = msg.replace("!player", t.getName());
-                msg = msg.replace("!amount", String.valueOf(items));
+                String setItems = "&8 ┃&f Установлено на &e{amount} &fпроданные предметы &e{player}";
+                String msg = Config.getMessages().getString("items_modify", setItems);
+                msg = msg.replace("{player}", t.getName());
+                msg = msg.replace("{amount}", String.valueOf(items));
                 msg = PlaceholderAPI.setPlaceholders(p, msg);
-                sender.sendMessage(utils.convert(msg));
+                sender.sendMessage(Utils.convert(msg));
                 return true;
             }
-            if (args[1].equalsIgnoreCase("autosell")) {
+            if (args[1].equalsIgnoreCase("auto-sell")) {
                 if (args.length != 4) return true;
                 Player t = Bukkit.getPlayer(args[2]);
                 if (t == null) {
@@ -141,33 +170,33 @@ public class Commands implements CommandExecutor {
                         sellerUtils.setAutoSellBought(uuid, false);
                         break;
                 }
-                String def = "&8 ┃&f Убран доступ к авто-продаже предметов для &e!player";
-                String msg = main.getConfig().getString("messages.autosell_remove", def);
+                String def = "&8 ┃&f Убран доступ к авто-продаже предметов для &e{player}";
+                String msg = Config.getMessages().getString("autosell_remove", def);
                 if (sellerUtils.isBoughtAutoSell(uuid)) {
-                    def = "&8 ┃&f Выдан доступ к авто-продаже предметов для &e!player";
-                    msg = main.getConfig().getString("messages.autosell_give", def);
+                    def = "&8 ┃&f Выдан доступ к авто-продаже предметов для &e{player}";
+                    msg = Config.getMessages().getString("autosell_give", def);
                 }
                 sellerUtils.setAutoSellEnabled(uuid, false);
 
-                msg = msg.replace("!player", t.getName());
+                msg = msg.replace("{player}", t.getName());
                 msg = PlaceholderAPI.setPlaceholders(p, msg);
-                sender.sendMessage(utils.convert(msg));
+                sender.sendMessage(Utils.convert(msg));
                 return true;
             }
         }
         return true;
     }
     public void sendMSG(CommandSender p, String path, String def, String arg) {
-        String msg = main.getConfig().getString("messages." + path, def);
+        String msg = Config.getMessages().getString(path, def);
         msg = msg.replace("{object}", arg);
         msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) p, msg);
-        p.sendMessage(utils.convert(msg));
+        p.sendMessage(Utils.convert(msg));
     }
 
     public void sendMSG(CommandSender p, String path, String def) {
-        String msg = main.getConfig().getString("messages." + path, def);
+        String msg = Config.getMessages().getString(path, def);
         msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) p, msg);
-        p.sendMessage(utils.convert(msg));
+        p.sendMessage(Utils.convert(msg));
     }
 
     public boolean isNotInt(Object o) {

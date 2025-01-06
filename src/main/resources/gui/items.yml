@@ -1,31 +1,57 @@
 title: "&8• Скупщик"
 size: 54
 
-# Обратно в меню продажи - seller
 # Купить денежный буст - buy_boost
+# Загрузить продаваемые предметы - load_items
+# Переместиться в другое меню - move_to-<файл>
 # Ничего не делает - none
 
 icons:
+  load_items:
+    function: load_items
+    name: "&#f89d57{item_type} &8| &7&o(Глобальный буст: x%soseller_globalboost%)"
+    lore:
+      - ""
+      - " &fЦена за шт&7: &a%soseller_priceboost_{item_type}% $ &7x{boost}"
+      - ""
+    items:
+      - DIAMOND
+      - EMERALD
+      - IRON_INGOT
+      - GOLD_INGOT
+      - COAL
+      - LAPIS_LAZULI
+      - NETHERITE_SCRAP
+    slots:
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 30
+      - 32
+
   buy_boost:
-    custom_model_data: 0
+    model_data: 0
     function: buy_boost
     material: GOLD_INGOT
     slots:
       - 50
-    name: "&eКупить буст! &7(Текущий: x!boost)"
+    name: "&eКупить буст! &7(Текущий: x{boost})"
     lore:
       - ""
       - " &fНажмите что-бы купить"
       - " &fбуст к продажи предметов"
-      - " &fЦена&7: &e!price ₽"
+      - " &fЦена&7: &e{price} ₽"
       - ""
     flags:
       - HIDE_ENCHANTS
     enchants:
       DURABILITY: 1
-  items:
-    custom_model_data: 0
-    function: seller
+
+  main:
+    model_data: 0
+    function: move_to-main # Открывает меню gui/main.yml
     material: EMERALD
     slots:
       - 48
@@ -38,6 +64,7 @@ icons:
       - HIDE_ENCHANTS
     enchants:
       DURABILITY: 1
+
   barrier:
     material: BLACK_STAINED_GLASS_PANE
     slots:
@@ -66,287 +93,3 @@ icons:
       - 52
       - 53
     name: " "
-
-  sugar_cane:
-    function: none
-    material: SUGAR_CANE
-    slots:
-      - 10
-    name: "&#f89d57Сахарный тростник"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_SUGAR_CANE% $ &7x!boost"
-      - ""
-  cactus:
-    function: none
-    material: CACTUS
-    slots:
-      - 11
-    name: "&#f89d57Кактус"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_CACTUS% $ &7x!boost"
-      - ""
-  bamboo:
-    function: none
-    material: BAMBOO
-    slots:
-      - 12
-    name: "&#f89d57Бамбук"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_BAMBOO% $ &7x!boost"
-      - ""
-  chorus_flower:
-    function: none
-    material: CHORUS_FLOWER
-    slots:
-      - 13
-    name: "&#f89d57Цветок хоруса"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_CHORUS_FLOWER% $ &7x!boost"
-      - ""
-  cocoa_beans:
-    function: none
-    material: COCOA_BEANS
-    slots:
-      - 14
-    name: "&#f89d57Какао-бобы"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_COCOA_BEANS% $ &7x!boost"
-      - ""
-  nether_wart:
-    function: none
-    material: NETHER_WART
-    slots:
-      - 15
-    name: "&#f89d57Незерский нарост"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_NETHER_WART% $ &7x!boost"
-      - ""
-  kelp:
-    function: none
-    material: KELP
-    slots:
-      - 16
-    name: "&#f89d57Ламинария"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_KELP% $ &7x!boost"
-      - ""
-
-  coal:
-    function: none
-    material: COAL
-    slots:
-      - 19
-    name: "&#f89d57Уголь"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_COAL% $ &7x!boost"
-      - ""
-  iron_ingot:
-    function: none
-    material: IRON_INGOT
-    slots:
-      - 20
-    name: "&#f89d57Железный слиток"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_IRON_INGOT% $ &7x!boost"
-      - ""
-  gold_ingot:
-    function: none
-    material: GOLD_INGOT
-    slots:
-      - 21
-    name: "&#f89d57Золотой слиток"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_GOLD_INGOT% $ &7x!boost"
-      - ""
-  lapis_lazuli:
-    function: none
-    material: LAPIS_LAZULI
-    slots:
-      - 22
-    name: "&#f89d57Лазурит"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_LAPIS_LAZULI% $ &7x!boost"
-      - ""
-  diamond:
-    function: none
-    material: DIAMOND
-    slots:
-      - 23
-    name: "&#f89d57Алмаз"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_DIAMOND% $ &7x!boost"
-      - ""
-  emerald:
-    function: none
-    material: EMERALD
-    slots:
-      - 24
-    name: "&#f89d57Изумруд"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_EMERALD% $ &7x!boost"
-      - ""
-  netherite_scrap:
-    function: none
-    material: NETHERITE_SCRAP
-    slots:
-      - 25
-    name: "&#f89d57Незеритовый лом"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_NETHERITE_SCRAP% $ &7x!boost"
-      - ""
-
-  dirt:
-    function: none
-    material: DIRT
-    slots:
-      - 28
-    name: "&#f89d57Земля"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_DIRT% $ &7x!boost"
-      - ""
-  cobblestone:
-    function: none
-    material: COBBLESTONE
-    slots:
-      - 29
-    name: "&#f89d57Булыжник"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_COBBLESTONE% $ &7x!boost"
-      - ""
-  redstone:
-    function: none
-    material: REDSTONE
-    slots:
-      - 30
-    name: "&#f89d57Редстоуновая пыль"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_REDSTONE% $ &7x!boost"
-      - ""
-  nether_bricks:
-    function: none
-    material: NETHER_BRICKS
-    slots:
-      - 31
-    name: "&#f89d57Незерский кирпич"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_NETHER_BRICKS% $ &7x!boost"
-      - ""
-  blackstone:
-    function: none
-    material: BLACKSTONE
-    slots:
-      - 32
-    name: "&#f89d57Чернит"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_BLACKSTONE% $ &7x!boost"
-      - ""
-  purpur_block:
-    function: none
-    material: PURPUR_BLOCK
-    slots:
-      - 33
-    name: "&#f89d57Пурпур"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_PURPUR_BLOCK% $ &7x!boost"
-      - ""
-  end_stone:
-    function: none
-    material: END_STONE
-    slots:
-      - 34
-    name: "&#f89d57Эндерняк"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_END_STONE% $ &7x!boost"
-      - ""
-
-  bone:
-    function: none
-    material: BONE
-    slots:
-      - 37
-    name: "&#f89d57Кость"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_BONE% $ &7x!boost"
-      - ""
-  shulker_shell:
-    function: none
-    material: SHULKER_SHELL
-    slots:
-      - 38
-    name: "&#f89d57Панцирь шалкера"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_SHULKER_SHELL% $ &7x!boost"
-      - ""
-  honey_bottle:
-    function: none
-    material: HONEY_BOTTLE
-    slots:
-      - 39
-    name: "&#f89d57Бутылочка мёда"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_HONEY_BOTTLE% $ &7x!boost"
-      - ""
-  GUNPOWDER:
-    function: none
-    material: GUNPOWDER
-    slots:
-      - 40
-    name: "&#f89d57Порох"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_GUNPOWDER% $ &7x!boost"
-      - ""
-  glowstone_dust:
-    function: none
-    material: GLOWSTONE_DUST
-    slots:
-      - 41
-    name: "&#f89d57Светокаменная пыль"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_GLOWSTONE_DUST% $ &7x!boost"
-      - ""
-  rotten_flesh:
-    function: none
-    material: ROTTEN_FLESH
-    slots:
-      - 42
-    name: "&#f89d57Гнилая плоть"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_ROTTEN_FLESH% $ &7x!boost"
-      - ""
-  blaze_rod:
-    function: none
-    material: BLAZE_ROD
-    slots:
-      - 43
-    name: "&#f89d57Огненный стержень"
-    lore:
-      - ""
-      - " &fЦена за шт&7: &a%soseller_priceboost_BLAZE_ROD% $ &7x!boost"
-      - ""
