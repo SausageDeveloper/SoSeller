@@ -34,6 +34,11 @@ public class PlaceholderAPI extends PlaceholderExpansion {
     }
 
     @Override
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
     public @Nullable String onRequest(OfflinePlayer op, @NotNull String params) {
         if (op != null && op.isOnline()) {
             Player p = op.getPlayer();
