@@ -1,18 +1,17 @@
 title: "&8• Скупщик"
 size: 54
 
-# Купить денежный буст - buy_boost
-# Загрузить продаваемые предметы - load_items
-# Переместиться в другое меню - move_to-<файл>
-# Ничего не делает - none
+# Документация к гуи - https://sausagedev.gitbook.io/sausagedev/nastroika/soseller-1.9/konfiguraciya/gui
 
 icons:
   load_items:
-    function: load_items
+    function: load_autosell
     name: "&#f89d57{item_type} &8| &7&o(Глобальный буст: x%soseller_globalboost%)"
     lore:
       - ""
       - " &fЦена за шт&7: &a%soseller_priceboost_{item_type}% $ &7x{boost}"
+      - ""
+      - " &fПродаётся при авто-скупке&7: {can_autosell}"
       - ""
     items:
       - DIAMOND
@@ -32,7 +31,6 @@ icons:
       - 32
 
   buy_boost:
-    model_data: 0
     function: buy_boost
     material: GOLD_INGOT
     slots:
@@ -50,7 +48,6 @@ icons:
       DURABILITY: 1
 
   main:
-    model_data: 0
     function: move_to-main # Открывает меню gui/main.yml
     material: EMERALD
     slots:

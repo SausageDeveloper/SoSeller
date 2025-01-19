@@ -34,7 +34,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.9.1";
+        return "1.9.2";
     }
 
     @Override
@@ -77,13 +77,6 @@ public class PlaceholderAPI extends PlaceholderExpansion {
                 int value = (int) (intItem != null ? intItem : 0);
                 double res = Math.round((value * boost * globalBoost) * 10.0) / 10.0;
                 return items.containsKey(item) ? String.valueOf(res) : "0.0";
-            }
-            if (params.contains("can_autosell_")) {
-                String item = params.replace("can_autosell_", "");
-                p.sendMessage("PAPI: " + params);
-                String itemEnabled = database.isAutoSellItem(uuid, item) ? "allow" : "deny";
-                String msg = Config.getMessages().getString(itemEnabled + "-autosell", "null");
-                return Utils.convert(msg);
             }
         }
         return null;

@@ -3,6 +3,7 @@ package org.sausagedev.soseller;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -92,15 +93,15 @@ public class Functions {
 
     public void buyBoost(Player p) {
         UUID uuid = p.getUniqueId();
+        FileConfiguration config = main.getConfig();
         int balance = 0;
-
-        double boost = database.getBoost(uuid);
         int price = 0;
-        Map<String, Object> boosts = main.getConfig().getConfigurationSection("boosts").getValues(false);
+        double boost = database.getBoost(uuid);
+        Map<String, Object> boosts = config.getConfigurationSection("boosts").getValues(false);
         String vault = null;
         for (String key : boosts.keySet()) {
             if (key.equalsIgnoreCase("message")) continue;
-            Map<String, Object> boostParams = main.getConfig().getConfigurationSection("boosts." + key).getValues(false);
+            Map<String, Object> boostParams = config.getConfigurationSection("boosts." + key).getValues(false);
             if (boost >= Integer.parseInt(key)) continue;
             price = (int) boostParams.get("price");
             vault = (String) boostParams.get("value");
@@ -172,7 +173,9 @@ public class Functions {
     }
     public void buyAutoSell(Player p) {
         UUID uuid = p.getUniqueId();
-        String vault = main.getConfig().getString("boosts.value", "vault");
+        FileConfiguration config = main.getConfig();
+        String vault = config.getString("boosts.value", "vault");
+        boolean allInclude = config.getBoolean("all_items_include");
         int balance = 0;
 
         if (vault.toLowerCase().contains("coinsengine:")) {
@@ -188,7 +191,7 @@ public class Functions {
         if (vault.equalsIgnoreCase("vault")) balance = (int) main.getEconomy().getBalance(p);
         if (vault.equalsIgnoreCase("items")) balance = database.getItems(uuid);
 
-        int price = main.getConfig().getInt("auto-sell.cost", 0);
+        int price = config.getInt("auto-sell.cost", 0);
         if (balance < price) {
             String def = "&8 ┃&f У вас недостаточно рублей &7{object}/{price}";
             String msg = Config.getMessages().getString("balance_error", def);
@@ -214,6 +217,14 @@ public class Functions {
 
         database.setAutoSellBought(uuid, true);
         database.setAutoSellEnabled(uuid, false);
+
+        if (allInclude) {
+            Map<String, Object> items = config.getConfigurationSection("items").getValues(false);
+            items.keySet().forEach(key -> {
+                database.setAutoSellItem(uuid, key);
+            });
+        }
+
         String def = "&8 ┃&f Вы купили доступ к авто-продаже предметов";
         String msg = Config.getMessages().getString("messages.buy_autosell", def);
         p.sendMessage(Utils.convert(msg));
@@ -225,11 +236,9 @@ public class Functions {
         if (!database.isBoughtAutoSell(uuid)) return;
         boolean itemEnabled = database.isAutoSellItem(uuid, material);
         if (itemEnabled) {
-            p.sendMessage("Removed " + material);
             database.removeAutoSellItem(uuid, material);
             return;
         }
-        p.sendMessage("Added " + material);
         database.setAutoSellItem(uuid, material);
     }
 
