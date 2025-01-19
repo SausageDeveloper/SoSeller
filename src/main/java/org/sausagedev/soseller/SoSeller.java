@@ -13,7 +13,7 @@ import org.sausagedev.soseller.listeners.AutoSellListener;
 import org.sausagedev.soseller.listeners.FuctionsListener;
 import org.sausagedev.soseller.listeners.MenuListener;
 import org.sausagedev.soseller.utils.Config;
-import org.sausagedev.soseller.utils.SellerUtils;
+import org.sausagedev.soseller.utils.Database;
 import org.sausagedev.soseller.utils.Utils;
 
 import java.io.File;
@@ -31,22 +31,23 @@ public final class SoSeller extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (!setupEconomy() ) {
+        if (isNotSetEconomy()) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (!setupEconomy() ) {
+                    if (isNotSetEconomy()) {
                         getLogger().severe("Плагин Vault не был найден! Скачайте его: https://www.spigotmc.org/resources/vault.34315/");
                         getServer().getPluginManager().disablePlugin(SoSeller.getPlugin(SoSeller.class));
                         return;
                     }
+                    Config.setMain(SoSeller.this);
                     enable();
                 }
             }.runTaskLater(this, 100);
             return;
         }
-        enable();
         Config.setMain(this);
+        enable();
     }
 
     public void enable() {
@@ -57,38 +58,45 @@ public final class SoSeller extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("CoinsEngine")) {
             getLogger().info("CoinsEngine подключён");
         }
-        SellerUtils sellerUtils = new SellerUtils(this);
+        Database database = new Database(this);
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPI(sellerUtils, this).register();
+            new PlaceholderAPI(database, this).register();
         }
         save("gui/items.yml");
         save("gui/main.yml");
-        database = new File(getDataFolder(), "database.db");
-        if (!database.exists()) {
+        save("language/en.yml");
+        save("language/ru.yml");
+        save("language/uk.yml");
+        this.database = new File(getDataFolder(), "database.db");
+        if (!this.database.exists()) {
             try {
-                database.createNewFile();
+                this.database.createNewFile();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        Functions functions = new Functions(this, sellerUtils);
-        getCommand("soseller").setExecutor(new Commands(this, sellerUtils));
+        Functions functions = new Functions(this, database);
+        getCommand("soseller").setExecutor(new Commands(this, database));
         getCommand("soseller").setTabCompleter(new TabCompleter());
         getServer().getPluginManager().registerEvents(new FuctionsListener(this, functions), this);
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
-        getServer().getPluginManager().registerEvents(new AutoSellListener(functions, sellerUtils, this), this);
+        getServer().getPluginManager().registerEvents(new AutoSellListener(functions, database, this), this);
         saveDefaultConfig();
         createDataBase();
 
-        if (getConfig().getBoolean("check_update")) {
-            Utils.checkUpdates(this, version -> {
-                if (getDescription().getVersion().equals(version)) {
-                    getLogger().info("Вы используете последнюю версию");
-                } else {
-                    getLogger().info("Найдена новая версия (" + version + ")");
-                }
-            });
-        }
+        if (!getConfig().getBoolean("check_update")) return;
+        Utils.checkUpdates(this, version -> {
+            if (getDescription().getVersion().equals(version)) {
+                String def = "Вы используете последнуюю версию!";
+                String msg = Config.getMessages().getString("last_version", def);
+                getLogger().info(msg);
+            } else {
+                String def = "Вышла новая версия {version}! Ссылка: https://www.spigotmc.org/resources/soseller.121023/";
+                String msg = Config.getMessages().getString("old_version", def);
+                msg = msg.replace("{version}", version);
+                getLogger().info(msg);
+            }
+        });
     }
 
     @Override
@@ -119,23 +127,24 @@ public final class SoSeller extends JavaPlugin {
                     "items INTEGER, " +
                     "boost DOUBLE, " +
                     "autosell BOOLEAN," +
-                    "autosell_enabled BOOLEAN)");
+                    "autosell_enabled BOOLEAN, " +
+                    "autosell_list TEXT)");
             statement.close();
         } catch (SQLException e) {
             getLogger().severe("SQLException error: " + e.getCause());
         }
     }
 
-    private boolean setupEconomy() {
+    private boolean isNotSetEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
+            return true;
         }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
-            return false;
+            return true;
         }
         econ = rsp.getProvider();
-        return true;
+        return false;
     }
 
     public Economy getEconomy() {

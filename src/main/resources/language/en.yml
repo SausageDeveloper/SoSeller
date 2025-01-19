@@ -28,6 +28,12 @@ help:
 # Message when the config is reloaded
 config_reload: "&8 ┃&f Config reloaded"
 
+# Message when a new plugin version is available
+old_version: "A new version {version} is out! Link: https://www.spigotmc.org/resources/soseller.121023/"
+
+# Message when using the latest plugin version
+last_version: "You are using the latest version!"
+
 
 # <---------------------------------->
 # <---------------------------------->
@@ -53,6 +59,9 @@ balance_error: "&8 ┃&f You don't have enough rubles &7{object}/{price}"
 # Message when the last boost is reached
 # {object} - Last Boost
 max_boost_error: "&8 ┃&f You have reached the last boost &7x{object}"
+
+# Message when currency is missing
+vault_error: "&8 ┃&f The currency does not &cexist &for is not &cspecified"
 
 
 # <----------------------------------------------->
@@ -118,3 +127,8 @@ auto-sell_remove: "&8 ┃&f Removed access to auto-sell items for &e{player}"
 # Message when auto-sell access is granted to anyone
 # {player} - Nick of the player to whom the change was applied
 auto-sell_give: "&8 ┃&f Granted access to auto-sell items to &e{player}"
+
+# Text for internal placeholder {can_autosell}
+# Is the item sold when auto-buying is enabled
+allow-autosell: "&aYes"
+deny-autosell: "&cNo"

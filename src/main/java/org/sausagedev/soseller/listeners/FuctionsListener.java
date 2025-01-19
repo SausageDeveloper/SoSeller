@@ -12,7 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.sausagedev.soseller.Functions;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.gui.Menu;
-import org.sausagedev.soseller.utils.SellerUtils;
+import org.sausagedev.soseller.utils.Database;
+import org.sausagedev.soseller.utils.MenuDetect;
 
 import java.util.UUID;
 
@@ -33,43 +34,51 @@ public class FuctionsListener implements Listener {
         if (item == null || item.getType() == Material.AIR) return;
         NBTCompound tag = new NBTItem(item);
         if (!tag.hasTag("SoSeller")) return;
-        SellerUtils sellerUtils = new SellerUtils(main);
+        Database database = new Database(main);
 
         String f = tag.getString("SoSeller").toLowerCase();
-        Menu menu = new Menu(main, sellerUtils);
-        if (f.equals("sell_all")) {
-            functions.sellItems(p, e.getInventory());
-            menu.open(p, "main");
-            functions.playSound(p, "onSellItems");
-            return;
-        }
-        if (f.equals("buy_boost")) {
-            functions.buyBoost(p);
-            menu.open(p, "main");
-            return;
-        }
-        if (f.equals("auto-sell")) {
-            UUID uuid = p.getUniqueId();
-            boolean bought = sellerUtils.isBoughtAutoSell(uuid);
-            if (bought) {
-                boolean isEnabled = sellerUtils.isEnabledAutoSell(uuid);
-                functions.playSound(p, "onSwapAutoSell");
-                if (isEnabled) {
-                    sellerUtils.setAutoSellEnabled(uuid, false);
-                    menu.open(p, "main");
-                    return;
-                }
-                sellerUtils.setAutoSellEnabled(uuid, true);
-                menu.open(p, "main");
-                return;
-            }
-            functions.buyAutoSell(p);
-            menu.open(p, "main");
-        }
+        Menu menu = new Menu(main, database);
+        String currentMenu = MenuDetect.getMenu();
+
         if (f.contains("move_to-")) {
             f = f.replace("move_to-", "");
             menu.open(p, f);
             functions.playSound(p, "onSwapGui");
+            return;
+        }
+        if (f.equals("offon_autosell_items")) {
+            functions.offOnAutoSellItem(p, item.getType().toString());
+            menu.open(p, currentMenu);
+            return;
+        }
+
+        switch (f) {
+            case "sell_all":
+                functions.sellItems(p, e.getInventory());
+                menu.open(p, currentMenu);
+                functions.playSound(p, "onSellItems");
+                return;
+            case "buy_boost":
+                functions.buyBoost(p);
+                menu.open(p, currentMenu);
+                return;
+            case "auto-sell":
+                UUID uuid = p.getUniqueId();
+                boolean bought = database.isBoughtAutoSell(uuid);
+                if (bought) {
+                    boolean isEnabled = database.isEnabledAutoSell(uuid);
+                    functions.playSound(p, "onSwapAutoSell");
+                    if (isEnabled) {
+                        database.setAutoSellEnabled(uuid, false);
+                        menu.open(p, currentMenu);
+                        return;
+                    }
+                    database.setAutoSellEnabled(uuid, true);
+                    menu.open(p, currentMenu);
+                    return;
+                }
+                functions.buyAutoSell(p);
+                menu.open(p, currentMenu);
         }
     }
 }

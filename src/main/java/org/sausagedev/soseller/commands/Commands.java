@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.gui.Menu;
 import org.sausagedev.soseller.utils.Config;
-import org.sausagedev.soseller.utils.SellerUtils;
+import org.sausagedev.soseller.utils.Database;
 import org.sausagedev.soseller.utils.Utils;
 
 import java.util.List;
@@ -19,18 +19,18 @@ import java.util.UUID;
 
 public class Commands implements CommandExecutor {
     private final SoSeller main;
-    private final SellerUtils sellerUtils;
+    private final Database database;
 
-    public Commands(SoSeller main, SellerUtils sellerUtils) {
+    public Commands(SoSeller main, Database database) {
         this.main = main;
-        this.sellerUtils = sellerUtils;
+        this.database = database;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, @NotNull String[] args) {
         Player p = Bukkit.getPlayer(sender.getName());
         if (args.length == 0 && p != null) {
-            Menu menu = new Menu(main, sellerUtils);
+            Menu menu = new Menu(main, database);
             menu.open(p, "main");
             return true;
         }
@@ -92,21 +92,21 @@ public class Commands implements CommandExecutor {
                     sendMSG(sender, "number_format_error", nullNumber, args[4]);
                     return true;
                 }
-                double boost = sellerUtils.getBoost(uuid);
+                double boost = database.getBoost(uuid);
                 double n = Double.parseDouble(args[4]);
                 switch (args[3]) {
                     case "set":
-                        sellerUtils.setBoost(uuid, n);
+                        database.setBoost(uuid, n);
                         break;
                     case "add":
-                        sellerUtils.setBoost(uuid, boost + n);
+                        database.setBoost(uuid, boost + n);
                         break;
                     case "take":
                         double res = boost - n;
-                        sellerUtils.setBoost(uuid, res < 1 ? 1 : res);
+                        database.setBoost(uuid, res < 1 ? 1 : res);
                         break;
                 }
-                boost = sellerUtils.getBoost(uuid);
+                boost = database.getBoost(uuid);
                 String setItems = "&8 ┃&f Установлен на &e{amount} &fбуст &e{player}";
                 String msg = Config.getMessages().getString("boost_modify", setItems);
                 msg = msg.replace("{player}", t.getName());
@@ -129,22 +129,22 @@ public class Commands implements CommandExecutor {
                     sendMSG(sender, "number_format_error", nullNumber, args[4]);
                     return true;
                 }
-                int items = sellerUtils.getItems(uuid);
+                int items = database.getItems(uuid);
                 int n = Integer.parseInt(args[4]);
                 switch (args[3]) {
                     case "set":
-                        sellerUtils.setItems(uuid, n);
+                        database.setItems(uuid, n);
                         break;
                     case "add":
-                        sellerUtils.setItems(uuid, items + n);
+                        database.setItems(uuid, items + n);
                         break;
                     case "take":
                         if (items <= 0) return true;
-                        sellerUtils.setItems(uuid, items - n);
+                        database.setItems(uuid, items - n);
                         break;
 
                 }
-                items = sellerUtils.getItems(uuid);
+                items = database.getItems(uuid);
                 String setItems = "&8 ┃&f Установлено на &e{amount} &fпроданные предметы &e{player}";
                 String msg = Config.getMessages().getString("items_modify", setItems);
                 msg = msg.replace("{player}", t.getName());
@@ -164,19 +164,19 @@ public class Commands implements CommandExecutor {
                 UUID uuid = t.getUniqueId();
                 switch (args[3]) {
                     case "give":
-                        sellerUtils.setAutoSellBought(uuid, true);
+                        database.setAutoSellBought(uuid, true);
                         break;
                     case "remove":
-                        sellerUtils.setAutoSellBought(uuid, false);
+                        database.setAutoSellBought(uuid, false);
                         break;
                 }
                 String def = "&8 ┃&f Убран доступ к авто-продаже предметов для &e{player}";
                 String msg = Config.getMessages().getString("autosell_remove", def);
-                if (sellerUtils.isBoughtAutoSell(uuid)) {
+                if (database.isBoughtAutoSell(uuid)) {
                     def = "&8 ┃&f Выдан доступ к авто-продаже предметов для &e{player}";
                     msg = Config.getMessages().getString("autosell_give", def);
                 }
-                sellerUtils.setAutoSellEnabled(uuid, false);
+                database.setAutoSellEnabled(uuid, false);
 
                 msg = msg.replace("{player}", t.getName());
                 msg = PlaceholderAPI.setPlaceholders(p, msg);

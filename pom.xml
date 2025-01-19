@@ -6,7 +6,7 @@
 
   <groupId>org.sausagedev</groupId>
   <artifactId>SoSeller</artifactId>
-  <version>1.9</version>
+  <version>1.9.1</version>
   <packaging>jar</packaging>
 
   <name>SoSeller</name>

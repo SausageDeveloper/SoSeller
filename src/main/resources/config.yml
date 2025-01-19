@@ -39,16 +39,17 @@ boosts:
 # Настройка звуков при опридилённых действиях
 sounds:
   # none - что-бы отключить
-  onSellItems: ENTITY_VILLAGER_YES # При продаже всех предметов
-  onAutoSellItems: ENTITY_EXPERIENCE_ORB_PICKUP # При авто-скупке предметов
-  onBuyAnything: ENTITY_VILLAGER_YES # При покупки чего-либо
-  onSwapGui: ENTITY_ARROW_HIT_PLAYER # При переходе в другие меню скупщика
-  onNotEnoughVault: ENTITY_VILLAGER_NO # При недостатке валюты для покупки чего-либо
-  onSwapAutoSell: ENTITY_ARROW_SHOOT # При переключении авто-скупки
+  # onSellItems: <айди звука>;<частота>:<громкость>
+  onSellItems: ENTITY_VILLAGER_YES;1;1 # При продаже всех предметов
+  onAutoSellItems: ENTITY_EXPERIENCE_ORB_PICKUP;1;1 # При авто-скупке предметов
+  onBuyAnything: ENTITY_VILLAGER_YES;1;1 # При покупках чего-либо
+  onSwapGui: ENTITY_ARROW_HIT_PLAYER;1;1 # При переходе в другие меню скупщика
+  onNotEnoughVault: ENTITY_VILLAGER_NO;1;1 # При недостатке валюты для покупки чего-либо
+  onSwapAutoSell: ENTITY_ARROW_SHOOT;1;1 # При переключении авто-скупки
 
 # Настройка цен для продажи предметов
 sell_items:
-  # Айди предмета: Цена за штуку
+  # <материал>:<цена за 1 шт>
 
   SUGAR_CANE: 5
   CACTUS: 8

@@ -13,6 +13,8 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 public class MenuListener implements Listener {
 
     @EventHandler
@@ -44,12 +46,12 @@ public class MenuListener implements Listener {
         Inventory inv = e.getInventory();
         Player p = (Player) e.getPlayer();
         if (!isSeller(inv)) return;
-        for (ItemStack item : inv.getContents()) {
-            if (item == null || item.getType().equals(Material.AIR)) continue;
+        Arrays.asList(inv.getContents()).forEach(item -> {
+            if (item == null || item.getType().equals(Material.AIR)) return;
             NBTItem nbt = new NBTItem(item);
-            if (nbt.hasTag("SoSeller")) continue;
+            if (nbt.hasTag("SoSeller")) return;
             getItem(p, item, item.getAmount());
-        }
+        });
     }
 
     public boolean isSeller(Inventory inv) {

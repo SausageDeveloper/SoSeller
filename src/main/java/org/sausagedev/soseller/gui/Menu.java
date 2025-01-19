@@ -5,6 +5,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -12,39 +13,39 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.sausagedev.soseller.SoSeller;
-import org.sausagedev.soseller.utils.Config;
-import org.sausagedev.soseller.utils.SellerUtils;
-import org.sausagedev.soseller.utils.SkullCreator;
-import org.sausagedev.soseller.utils.Utils;
+import org.sausagedev.soseller.utils.*;
 
 import java.util.*;
 
 public class Menu {
     private final SoSeller main;
-    private final SellerUtils sellerUtils;
+    private final Database database;
 
-    public Menu(SoSeller main, SellerUtils sellerUtils) {
+    public Menu(SoSeller main, Database database) {
         this.main = main;
-        this.sellerUtils = sellerUtils;
+        this.database = database;
     }
 
     public void open(Player p, String menu) {
-        String title = Config.getMenu(menu).getString("title", "&aСкупщик");
+        YamlConfiguration config = Config.getMenu(menu);
+        YamlConfiguration messages = Config.getMessages();
+        String title = config.getString("title", "&aСкупщик");
         title = PlaceholderAPI.setPlaceholders(p, title);
-        int size = Config.getMenu(menu).getInt("size", 54);
+        int size = config.getInt("size", 54);
         Inventory inv = Bukkit.createInventory(null, size, Utils.convert(title));
 
         UUID uuid = p.getUniqueId();
-        double boost = sellerUtils.getBoost(p.getUniqueId());
+        double boost = database.getBoost(p.getUniqueId());
         double globalBoost = main.getConfig().getDouble("global_boost", 1);
 
-        Map<String, Object> icons = Config.getMenu(menu).getConfigurationSection("icons").getValues(false);
+        Map<String, Object> icons = config.getConfigurationSection("icons").getValues(false);
         for (String icon : icons.keySet()) {
             StringBuilder path = new StringBuilder("icons." + icon + ".");
-            String function = Config.getMenu(menu).getString(path + "function", "none");
+            String function = config.getString(path + "function", "none");
             boolean isLoadItems = function.equalsIgnoreCase("load_items");
-            List<String> items = Config.getMenu(menu).getStringList(path + "items");
-            List<Integer> slots = Config.getMenu(menu).getIntegerList(path + "slots");
+            boolean isLoadAutoSellItems = function.equalsIgnoreCase("load_autosell");
+            List<String> items = config.getStringList(path + "items");
+            List<Integer> slots = config.getIntegerList(path + "slots");
             int price = 0;
             Map<String, Object> boosts = main.getConfig().getConfigurationSection("boosts").getValues(false);
             for (String key : boosts.keySet()) {
@@ -56,17 +57,17 @@ public class Menu {
             }
             if (function.equalsIgnoreCase("auto-sell")) {
                 price = main.getConfig().getInt("auto-sell.cost");
-                boolean isBought = sellerUtils.isBoughtAutoSell(uuid);
+                boolean isBought = database.isBoughtAutoSell(uuid);
                 if (isBought) {
                     path.append("bought.");
-                    boolean isEnabled = sellerUtils.isEnabledAutoSell(uuid);
+                    boolean isEnabled = database.isEnabledAutoSell(uuid);
                     path = new StringBuilder(isEnabled ? path + "enabled." : path + "disabled.");
                 } else {
                     path.append("have_not.");
                 }
             }
 
-            String mat = Config.getMenu(menu).getString(path + "material", "BEDROCK");
+            String mat = config.getString(path + "material", "BEDROCK");
             boolean basehead = mat.contains("basehead-");
             Material material = null;
             if (!basehead) {
@@ -75,21 +76,21 @@ public class Menu {
                 mat = mat.replace("basehead-", "");
             }
 
-            int amount = Config.getMenu(menu).getInt(path + "amount", 1);
-            String displayName = Config.getMenu(menu).getString(path + "name", "&e" + icon);
+            int amount = config.getInt(path + "amount", 1);
+            String displayName = config.getString(path + "name", "&e" + icon);
             displayName = displayName.replace("{boost}", String.valueOf(boost));
             displayName = displayName.replace("{globalboost}", String.valueOf(globalBoost));
             displayName = displayName.replace("{price}", String.valueOf(price));
             displayName = PlaceholderAPI.setPlaceholders(p, displayName);
 
-            List<String> lore = Config.getMenu(menu).getStringList(path + "lore");
-            int customModelData = Config.getMenu(menu).getInt(path + "custom_model_data");
-            ConfigurationSection section = Config.getMenu(menu).getConfigurationSection(path + "enchants");
+            List<String> lore = config.getStringList(path + "lore");
+            int customModelData = config.getInt(path + "model_data");
+            ConfigurationSection section = config.getConfigurationSection(path + "enchants");
             Map<String, Object> enchants = new HashMap<>();
             if (section != null) {
-                enchants = Config.getMenu(menu).getConfigurationSection(path + "enchants").getValues(false);
+                enchants = config.getConfigurationSection(path + "enchants").getValues(false);
             }
-            List<String> flags = Config.getMenu(menu).getStringList(path + "flags");
+            List<String> flags = config.getStringList(path + "flags");
 
             ItemStack item = basehead ? SkullCreator.itemFromBase64(mat) : new ItemStack(material);
             ItemMeta meta = item.getItemMeta();
@@ -117,7 +118,7 @@ public class Menu {
             item.setAmount(amount);
 
 
-            if (!isLoadItems) {
+            if (!isLoadItems && !isLoadAutoSellItems) {
                 displayName = PlaceholderAPI.setPlaceholders(p, displayName);
                 meta.setDisplayName(Utils.convert(displayName));
                 List<String> l2 = new ArrayList<>();
@@ -133,14 +134,18 @@ public class Menu {
             } else {
                 for (String i : new ArrayList<>(items)) {
                     if (slots.isEmpty()) break;
-                    Map<String, Object> materials = Config.getMessages().getConfigurationSection("materials").getValues(false);
-                    boolean hasTranslate = materials.containsKey(i);
-                    String d2 = displayName.replace("{item_type}", hasTranslate ? materials.get(i).toString() : i);
+                    Map<String, Object> materials = messages.getConfigurationSection("materials").getValues(false);
+                    String itemEnabled = database.isAutoSellItem(uuid, i) ? "allow" : "deny";
+                    String translatedItem = materials.containsKey(i) ? materials.get(i).toString() : i;
+                    String msg = messages.getString(itemEnabled + "-autosell", "null");
+                    String d2 = displayName.replace("{item_type}", translatedItem);
+                    d2 = d2.replace("{can_autosell}", msg);
                     d2 = PlaceholderAPI.setPlaceholders(p, d2);
                     meta.setDisplayName(Utils.convert(d2));
                     List<String> l2 = new ArrayList<>();
                     lines.forEach(line -> {
                         line = line.replace("{item_type}", i);
+                        line = line.replace("{can_autosell}", msg);
                         line = PlaceholderAPI.setPlaceholders(p, line);
                         l2.add(Utils.convert(line));
                     });
@@ -151,7 +156,7 @@ public class Menu {
                     item.setType(Material.valueOf(i));
 
                     NBTItem itemTag = new NBTItem(item);
-                    itemTag.setString("SoSeller", function);
+                    itemTag.setString("SoSeller", isLoadAutoSellItems ? "offon_autosell_items" : "none");
 
                     Object firstSlot = new ArrayList<>(slots).get(0);
                     inv.setItem((int) firstSlot, itemTag.getItem());
@@ -161,6 +166,7 @@ public class Menu {
                 }
             }
         }
+        MenuDetect.setMenu(menu);
         p.openInventory(inv);
     }
 }

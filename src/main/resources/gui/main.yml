@@ -13,7 +13,6 @@ icons:
       - 48
     bought:
       enabled:
-        model_data: 0
         material: basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWEzMzI2YmI1NTI3OTk5NTQzYzU2YTIyYWIzYzIwMmFkNTQ2YzJjOTdkNTIzYjQ4OGVkODg4ZTgwMDNhZTRkMSJ9fX0=
         name: "&3Авто-продажа"
         lore:
@@ -26,7 +25,6 @@ icons:
         enchants:
           DURABILITY: 1
       disabled:
-        model_data: 0
         material: basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODA0YzVjZTEyNTQ1YTdjY2RmMGEzNWI5ZGYwZWY5YmFjMTU4MjZjM2EwNzg2ZTFjZTEwZjNlYzdkMDY1NmY2MSJ9fX0=
         name: "&3Авто-продажа"
         lore:
@@ -39,7 +37,6 @@ icons:
         enchants:
           DURABILITY: 1
     have_not:
-      model_data: 0
       material: basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE4ZGZjYTY2ZTQ5N2Y2MjQxZGI2YjFmMmRmZTEzNTMwOWE1NjZjZDZjMDc3NWE5Y2E1NWU1ZmFlZTBjNjA1YSJ9fX0=
       name: "&cАвто-продажа"
       lore:
@@ -54,7 +51,6 @@ icons:
         DURABILITY: 1
 
   sell_all:
-    model_data: 0
     function: sell_all
     material: BUCKET
     slots:
@@ -71,7 +67,6 @@ icons:
       DURABILITY: 1
 
   buy_boost:
-    model_data: 0
     function: buy_boost
     material: GOLD_INGOT
     slots:
@@ -89,7 +84,6 @@ icons:
       DURABILITY: 1
 
   items:
-    model_data: 0
     function: move_to-items # Открывает меню gui/items.yml
     material: BOOK
     slots:
@@ -106,7 +100,6 @@ icons:
       DURABILITY: 1
 
   info:
-    model_data: 0
     material: PAPER
     slots:
       - 4
