@@ -219,7 +219,7 @@ public class Functions {
         database.setAutoSellEnabled(uuid, false);
 
         if (allInclude) {
-            Map<String, Object> items = config.getConfigurationSection("items").getValues(false);
+            Map<String, Object> items = config.getConfigurationSection("sell_items").getValues(false);
             items.keySet().forEach(key -> {
                 database.setAutoSellItem(uuid, key);
             });

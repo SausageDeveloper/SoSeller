@@ -77,9 +77,10 @@ public class Commands implements CommandExecutor {
                 msg = msg.replace("{amount}", String.valueOf(globalBoost));
                 msg = PlaceholderAPI.setPlaceholders(p, msg);
                 sender.sendMessage(Utils.convert(msg));
+                return true;
             }
             if (args[1].equalsIgnoreCase("boost")) {
-                if (args.length != 5) return true;
+                if (args.length < 5) return true;
                 Player t = Bukkit.getPlayer(args[2]);
                 if (t == null) {
                     String nullPlayer = "&8 ┃&f Игрок {object} не найден";
@@ -181,7 +182,6 @@ public class Commands implements CommandExecutor {
                 msg = msg.replace("{player}", t.getName());
                 msg = PlaceholderAPI.setPlaceholders(p, msg);
                 sender.sendMessage(Utils.convert(msg));
-                return true;
             }
         }
         return true;

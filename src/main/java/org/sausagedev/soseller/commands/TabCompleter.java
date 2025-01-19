@@ -30,7 +30,7 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
             list.add("boost");
             list.add("globalboost");
             list.add("items");
-            list.add("autosell");
+            list.add("auto-sell");
             return list;
         }
         if (args.length == 3 && args[1].equalsIgnoreCase("globalboost")) {
