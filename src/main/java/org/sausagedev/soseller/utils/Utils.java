@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class Utils {
     private static final Pattern HEX_PATTERN = Pattern.compile("(?i)&(#\\w{6})");
 
-    public static String getStringByList(List<String> list){
+    public static String getStringByList(List<String> list) {
         StringBuilder stb = new StringBuilder();
         for(String key : list){
             stb.append(key);
@@ -25,6 +25,8 @@ public class Utils {
         }
         return convert(stb.toString());
     }
+
+
     public static String convert(String msg) {
 
         msg = ChatColor.translateAlternateColorCodes('&', msg);
@@ -39,6 +41,8 @@ public class Utils {
 
         return buffer.toString();
     }
+
+
     private static String hexToChatColor(String hex) {
         StringBuilder builder = new StringBuilder("§x");
         for (char c : hex.substring(1).toCharArray()) {
@@ -46,6 +50,8 @@ public class Utils {
         }
         return builder.toString();
     }
+
+
     public static boolean hasPerm(CommandSender sender, String perm) {
         if (!sender.hasPermission(perm)) {
             String def = "&cУ вас недостаточно прав";

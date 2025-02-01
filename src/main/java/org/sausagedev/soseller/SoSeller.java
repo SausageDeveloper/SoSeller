@@ -12,6 +12,7 @@ import org.sausagedev.soseller.commands.TabCompleter;
 import org.sausagedev.soseller.listeners.AutoSellListener;
 import org.sausagedev.soseller.listeners.FuctionsListener;
 import org.sausagedev.soseller.listeners.MenuListener;
+import org.sausagedev.soseller.utils.AutoSell;
 import org.sausagedev.soseller.utils.Config;
 import org.sausagedev.soseller.utils.Database;
 import org.sausagedev.soseller.utils.Utils;
@@ -22,6 +23,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 
 public final class SoSeller extends JavaPlugin {
     private Economy econ = null;
@@ -47,6 +49,7 @@ public final class SoSeller extends JavaPlugin {
             return;
         }
         Config.setMain(this);
+        AutoSell.setListOfMaterials(new HashMap<>());
         enable();
     }
 
@@ -80,7 +83,7 @@ public final class SoSeller extends JavaPlugin {
         getCommand("soseller").setTabCompleter(new TabCompleter());
         getServer().getPluginManager().registerEvents(new FuctionsListener(this, functions), this);
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
-        getServer().getPluginManager().registerEvents(new AutoSellListener(functions, database, this), this);
+        getServer().getPluginManager().registerEvents(new AutoSellListener(functions, this), this);
         saveDefaultConfig();
         createDataBase();
 
@@ -126,9 +129,7 @@ public final class SoSeller extends JavaPlugin {
                     "nick TEXT, " +
                     "items INTEGER, " +
                     "boost DOUBLE, " +
-                    "autosell BOOLEAN," +
-                    "autosell_enabled BOOLEAN, " +
-                    "autosell_list TEXT)");
+                    "autosell BOOLEAN)");
             statement.close();
         } catch (SQLException e) {
             getLogger().severe("SQLException error: " + e.getCause());

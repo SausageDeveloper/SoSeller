@@ -1,5 +1,6 @@
 package org.sausagedev.soseller.utils;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.sausagedev.soseller.SoSeller;
 
@@ -20,6 +21,7 @@ public class Config {
         }
         return YamlConfiguration.loadConfiguration(file);
     }
+
     public static YamlConfiguration getMenu(String menu) {
         if (menu == null) menu = "main";
         File file = new File(main.getDataFolder(), "gui/" + menu + ".yml");
@@ -27,6 +29,10 @@ public class Config {
             main.saveResource("gui/" + menu + ".yml", false);
         }
         return YamlConfiguration.loadConfiguration(file);
+    }
+
+    public static FileConfiguration getSettings() {
+        return main.getConfig();
     }
 
     public static void setMain(SoSeller main) {

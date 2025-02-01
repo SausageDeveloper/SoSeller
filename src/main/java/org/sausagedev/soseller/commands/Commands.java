@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.gui.Menu;
+import org.sausagedev.soseller.utils.AutoSell;
 import org.sausagedev.soseller.utils.Config;
 import org.sausagedev.soseller.utils.Database;
 import org.sausagedev.soseller.utils.Utils;
@@ -30,7 +31,7 @@ public class Commands implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, @NotNull String[] args) {
         Player p = Bukkit.getPlayer(sender.getName());
         if (args.length == 0 && p != null) {
-            Menu menu = new Menu(main, database);
+            Menu menu = new Menu(database);
             menu.open(p, "main");
             return true;
         }
@@ -177,7 +178,7 @@ public class Commands implements CommandExecutor {
                     def = "&8 ┃&f Выдан доступ к авто-продаже предметов для &e{player}";
                     msg = Config.getMessages().getString("autosell_give", def);
                 }
-                database.setAutoSellEnabled(uuid, false);
+                AutoSell.disable(uuid);
 
                 msg = msg.replace("{player}", t.getName());
                 msg = PlaceholderAPI.setPlaceholders(p, msg);

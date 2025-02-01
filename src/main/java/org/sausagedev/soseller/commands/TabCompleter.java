@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TabCompleter implements org.bukkit.command.TabCompleter {
@@ -18,57 +19,32 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
         Player p = Bukkit.getPlayer(sender.getName());
         if (p == null) return null;
         if (!p.hasPermission("soseller.admin")) return null;
-        List<String> list = new ArrayList<>();
-        if (args.length == 1) {
-            list.add("help");
-            list.add("admin");
-            list.add("reload");
-            return list;
-        }
+        int length = args.length;
+        if (length == 1) return Arrays.asList("help", "admin", "reload");
+        String arg1 = args[1].toLowerCase();
         if (!args[0].equalsIgnoreCase("admin")) return null;
-        if (args.length == 2) {
-            list.add("boost");
-            list.add("globalboost");
-            list.add("items");
-            list.add("auto-sell");
-            return list;
+        if (length == 2) {
+            return Arrays.asList("boost", "globalboost", "items", "auto-sell");
         }
-        if (args.length == 3 && args[1].equalsIgnoreCase("globalboost")) {
-            list.add("set");
-            list.add("add");
-            list.add("take");
-            return list;
+        if (length == 3 && arg1.equals("globalboost")) {
+            return Arrays.asList("set", "add", "take");
         }
-        if (args.length == 4) {
-            if (args[1].equalsIgnoreCase("autosell")) {
-                list.add("give");
-                list.add("remove");
-                return list;
+        if (length == 4) {
+            if (arg1.equals("autosell")) {
+                return Arrays.asList("give", "remove");
             }
-            if (args[1].equalsIgnoreCase("globalboost")) {
-                list.add("0.1");
-                list.add("0.5");
-                list.add("1.0");
-                return list;
+            if (arg1.equals("globalboost")) {
+                return Arrays.asList("0.1", "0.5", "1.0");
             }
-            list.add("set");
-            list.add("add");
-            list.add("take");
-            return list;
+            return Arrays.asList("set", "add", "take");
         }
-        if (args.length == 5) {
-            if (args[1].equalsIgnoreCase("autosell")) return null;
-            if (args[1].equalsIgnoreCase("globalboost")) return null;
-            if (args[1].equalsIgnoreCase("boost")) {
-                list.add("0.1");
-                list.add("0.5");
-                list.add("1.0");
-                return list;
+        if (length == 5) {
+            if (arg1.equals("autosell")) return null;
+            if (arg1.equals("globalboost")) return null;
+            if (arg1.equals("boost")) {
+                return Arrays.asList("0.1", "0.5", "1.0");
             }
-            list.add("1");
-            list.add("5");
-            list.add("10");
-            return list;
+            return Arrays.asList("1", "5", "10");
         }
         return null;
     }

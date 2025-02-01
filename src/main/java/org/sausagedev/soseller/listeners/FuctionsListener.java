@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.sausagedev.soseller.Functions;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.gui.Menu;
+import org.sausagedev.soseller.utils.AutoSell;
 import org.sausagedev.soseller.utils.Database;
 import org.sausagedev.soseller.utils.MenuDetect;
 
@@ -37,7 +38,7 @@ public class FuctionsListener implements Listener {
         Database database = new Database(main);
 
         String f = tag.getString("SoSeller").toLowerCase();
-        Menu menu = new Menu(main, database);
+        Menu menu = new Menu(database);
         String currentMenu = MenuDetect.getMenu();
 
         if (f.contains("move_to-")) {
@@ -47,7 +48,7 @@ public class FuctionsListener implements Listener {
             return;
         }
         if (f.equals("offon_autosell_items")) {
-            functions.offOnAutoSellItem(p, item.getType().toString());
+            functions.offOnAutoSellItem(p, item.getType());
             menu.open(p, currentMenu);
             return;
         }
@@ -66,14 +67,14 @@ public class FuctionsListener implements Listener {
                 UUID uuid = p.getUniqueId();
                 boolean bought = database.isBoughtAutoSell(uuid);
                 if (bought) {
-                    boolean isEnabled = database.isEnabledAutoSell(uuid);
+                    boolean isEnabled = AutoSell.isEnabled(uuid);
                     functions.playSound(p, "onSwapAutoSell");
                     if (isEnabled) {
-                        database.setAutoSellEnabled(uuid, false);
+                        AutoSell.disable(uuid);
                         menu.open(p, currentMenu);
                         return;
                     }
-                    database.setAutoSellEnabled(uuid, true);
+                    AutoSell.enable(uuid);
                     menu.open(p, currentMenu);
                     return;
                 }

@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.sausagedev.soseller.utils.AutoSell;
 import org.sausagedev.soseller.utils.Config;
 import org.sausagedev.soseller.utils.Database;
 import org.sausagedev.soseller.utils.Utils;
@@ -133,9 +134,9 @@ public class Functions {
             }
             balance = (int) CoinsEngineAPI.getBalance(p, currency);
         }
-        if (vault.equalsIgnoreCase("playerpoints")) balance = main.getPP().look(uuid);
-        if (vault.equalsIgnoreCase("vault")) balance = (int) main.getEconomy().getBalance(p);
-        if (vault.equalsIgnoreCase("items")) balance = database.getItems(uuid);
+        else if (vault.equalsIgnoreCase("playerpoints")) balance = main.getPP().look(uuid);
+        else if (vault.equalsIgnoreCase("vault")) balance = (int) main.getEconomy().getBalance(p);
+        else if (vault.equalsIgnoreCase("items")) balance = database.getItems(uuid);
 
         if (balance < price) {
             String def = "&8 ┃&f У вас недостаточно рублей &7{object}/{price}";
@@ -158,9 +159,9 @@ public class Functions {
             }
             CoinsEngineAPI.removeBalance(p, currency, price);
         }
-        if (vault.equalsIgnoreCase("playerpoints")) main.getPP().take(uuid, price);
-        if (vault.equalsIgnoreCase("vault")) main.getEconomy().withdrawPlayer(p, price);
-        if (vault.equalsIgnoreCase("items")) database.setItems(uuid, balance - price);
+        else if (vault.equalsIgnoreCase("playerpoints")) main.getPP().take(uuid, price);
+        else if (vault.equalsIgnoreCase("vault")) main.getEconomy().withdrawPlayer(p, price);
+        else if (vault.equalsIgnoreCase("items")) database.setItems(uuid, balance - price);
         database.setBoost(uuid, boost + 0.1);
 
         String def = "&8 ┃&f Вы купили буст &3x{boost}";
@@ -171,6 +172,7 @@ public class Functions {
         p.sendMessage(Utils.convert(msg));
         playSound(p, "onBuyAnything");
     }
+
     public void buyAutoSell(Player p) {
         UUID uuid = p.getUniqueId();
         FileConfiguration config = main.getConfig();
@@ -187,9 +189,9 @@ public class Functions {
             }
             balance = (int) CoinsEngineAPI.getBalance(p, currency);
         }
-        if (vault.equalsIgnoreCase("playerpoints")) balance = main.getPP().look(uuid);
-        if (vault.equalsIgnoreCase("vault")) balance = (int) main.getEconomy().getBalance(p);
-        if (vault.equalsIgnoreCase("items")) balance = database.getItems(uuid);
+        else if (vault.equalsIgnoreCase("playerpoints")) balance = main.getPP().look(uuid);
+        else if (vault.equalsIgnoreCase("vault")) balance = (int) main.getEconomy().getBalance(p);
+        else if (vault.equalsIgnoreCase("items")) balance = database.getItems(uuid);
 
         int price = config.getInt("auto-sell.cost", 0);
         if (balance < price) {
@@ -211,17 +213,17 @@ public class Functions {
             }
             CoinsEngineAPI.removeBalance(p, currency, price);
         }
-        if (vault.equalsIgnoreCase("playerpoints")) main.getPP().take(uuid, price);
-        if (vault.equalsIgnoreCase("vault")) main.getEconomy().withdrawPlayer(p, price);
-        if (vault.equalsIgnoreCase("items")) database.setItems(uuid, balance - price);
+        else if (vault.equalsIgnoreCase("playerpoints")) main.getPP().take(uuid, price);
+        else if (vault.equalsIgnoreCase("vault")) main.getEconomy().withdrawPlayer(p, price);
+        else if (vault.equalsIgnoreCase("items")) database.setItems(uuid, balance - price);
 
         database.setAutoSellBought(uuid, true);
-        database.setAutoSellEnabled(uuid, false);
+        if (AutoSell.isEnabled(uuid)) AutoSell.disable(uuid);
 
         if (allInclude) {
             Map<String, Object> items = config.getConfigurationSection("sell_items").getValues(false);
             items.keySet().forEach(key -> {
-                database.setAutoSellItem(uuid, key);
+                AutoSell.enableMaterial(uuid, Material.valueOf(key));
             });
         }
 
@@ -231,15 +233,15 @@ public class Functions {
         playSound(p, "onNotEnoughVault");
     }
 
-    public void offOnAutoSellItem(Player p, String material) {
+    public void offOnAutoSellItem(Player p, Material material) {
         UUID uuid = p.getUniqueId();
+        boolean itemEnabled = AutoSell.isEnabled(uuid, material);
         if (!database.isBoughtAutoSell(uuid)) return;
-        boolean itemEnabled = database.isAutoSellItem(uuid, material);
-        if (itemEnabled) {
-            database.removeAutoSellItem(uuid, material);
+        else if (itemEnabled) {
+            AutoSell.disableMaterial(uuid, material);
             return;
         }
-        database.setAutoSellItem(uuid, material);
+        AutoSell.enableMaterial(uuid, material);
     }
 
     public void playSound(Player p, String path) {

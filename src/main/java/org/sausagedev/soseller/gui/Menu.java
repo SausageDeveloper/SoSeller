@@ -5,30 +5,28 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.utils.*;
 
 import java.util.*;
 
 public class Menu {
-    private final SoSeller main;
     private final Database database;
 
-    public Menu(SoSeller main, Database database) {
-        this.main = main;
+    public Menu(Database database) {
         this.database = database;
     }
 
     public void open(Player p, String menu) {
-        YamlConfiguration config = Config.getMenu(menu);
-        YamlConfiguration messages = Config.getMessages();
+        FileConfiguration config = Config.getMenu(menu);
+        FileConfiguration main = Config.getSettings();
+        FileConfiguration messages = Config.getMessages();
         String title = config.getString("title", "&aСкупщик");
         title = PlaceholderAPI.setPlaceholders(p, title);
         int size = config.getInt("size", 54);
@@ -36,7 +34,7 @@ public class Menu {
 
         UUID uuid = p.getUniqueId();
         double boost = database.getBoost(p.getUniqueId());
-        double globalBoost = main.getConfig().getDouble("global_boost", 1);
+        double globalBoost = config.getDouble("global_boost", 1);
 
         Map<String, Object> icons = config.getConfigurationSection("icons").getValues(false);
         for (String icon : icons.keySet()) {
@@ -47,20 +45,20 @@ public class Menu {
             List<String> items = config.getStringList(path + "items");
             List<Integer> slots = config.getIntegerList(path + "slots");
             int price = 0;
-            Map<String, Object> boosts = main.getConfig().getConfigurationSection("boosts").getValues(false);
+            Map<String, Object> boosts = main.getConfigurationSection("boosts").getValues(false);
             for (String key : boosts.keySet()) {
                 if (key.equalsIgnoreCase("message")) continue;
-                Map<String, Object> boostParams = main.getConfig().getConfigurationSection("boosts." + key).getValues(false);
+                Map<String, Object> boostParams = main.getConfigurationSection("boosts." + key).getValues(false);
                 if (boost >= Integer.parseInt(key)) continue;
                 price = (int) boostParams.get("price");
                 break;
             }
             if (function.equalsIgnoreCase("auto-sell")) {
-                price = main.getConfig().getInt("auto-sell.cost");
+                price = config.getInt("auto-sell.cost");
                 boolean isBought = database.isBoughtAutoSell(uuid);
                 if (isBought) {
                     path.append("bought.");
-                    boolean isEnabled = database.isEnabledAutoSell(uuid);
+                    boolean isEnabled = AutoSell.isEnabled(uuid);
                     path = new StringBuilder(isEnabled ? path + "enabled." : path + "disabled.");
                 } else {
                     path.append("have_not.");
@@ -135,7 +133,7 @@ public class Menu {
                 for (String i : new ArrayList<>(items)) {
                     if (slots.isEmpty()) break;
                     Map<String, Object> materials = messages.getConfigurationSection("materials").getValues(false);
-                    String itemEnabled = database.isAutoSellItem(uuid, i) ? "allow" : "deny";
+                    String itemEnabled = AutoSell.isEnabled(uuid, Material.valueOf(i)) ? "allow" : "deny";
                     String translatedItem = materials.containsKey(i) ? materials.get(i).toString() : i;
                     String msg = messages.getString(itemEnabled + "-autosell", "null");
                     String d2 = displayName.replace("{item_type}", translatedItem);
