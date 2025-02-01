@@ -6,7 +6,7 @@ size: 54
 icons:
   load_items:
     function: load_autosell
-    name: "&#f89d57{item_type} &8| &7&o(Глобальный буст: x%soseller_globalboost%)"
+    name: "&#f89d57{item_type_display} &8| &7&o(Глобальный буст: x%soseller_globalboost%)"
     lore:
       - ""
       - " &fЦена за шт&7: &a%soseller_priceboost_{item_type}% $ &7x{boost}"

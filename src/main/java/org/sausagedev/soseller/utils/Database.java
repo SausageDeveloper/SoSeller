@@ -86,7 +86,8 @@ public class Database {
     public void add(UUID uuid, Connection connection) throws SQLException {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return;
-        PreparedStatement ps = connection.prepareStatement("INSERT INTO database(uuid, " +
+        PreparedStatement ps = connection.prepareStatement("INSERT INTO database(" +
+                "uuid, " +
                 "nick, " +
                 "items, " +
                 "boost, " +

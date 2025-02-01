@@ -34,7 +34,7 @@ public class Menu {
 
         UUID uuid = p.getUniqueId();
         double boost = database.getBoost(p.getUniqueId());
-        double globalBoost = config.getDouble("global_boost", 1);
+        double globalBoost = main.getDouble("global_boost", 1);
 
         Map<String, Object> icons = config.getConfigurationSection("icons").getValues(false);
         for (String icon : icons.keySet()) {
@@ -54,7 +54,7 @@ public class Menu {
                 break;
             }
             if (function.equalsIgnoreCase("auto-sell")) {
-                price = config.getInt("auto-sell.cost");
+                price = main.getInt("auto-sell.cost");
                 boolean isBought = database.isBoughtAutoSell(uuid);
                 if (isBought) {
                     path.append("bought.");
@@ -136,13 +136,15 @@ public class Menu {
                     String itemEnabled = AutoSell.isEnabled(uuid, Material.valueOf(i)) ? "allow" : "deny";
                     String translatedItem = materials.containsKey(i) ? materials.get(i).toString() : i;
                     String msg = messages.getString(itemEnabled + "-autosell", "null");
-                    String d2 = displayName.replace("{item_type}", translatedItem);
+                    String d2 = displayName.replace("{item_type}", i);
+                    d2 = d2.replace("{item_type_display}", translatedItem);
                     d2 = d2.replace("{can_autosell}", msg);
                     d2 = PlaceholderAPI.setPlaceholders(p, d2);
                     meta.setDisplayName(Utils.convert(d2));
                     List<String> l2 = new ArrayList<>();
                     lines.forEach(line -> {
                         line = line.replace("{item_type}", i);
+                        line = line.replace("{item_type_display}", translatedItem);
                         line = line.replace("{can_autosell}", msg);
                         line = PlaceholderAPI.setPlaceholders(p, line);
                         l2.add(Utils.convert(line));
