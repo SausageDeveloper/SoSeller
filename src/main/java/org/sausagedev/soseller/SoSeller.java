@@ -49,7 +49,6 @@ public final class SoSeller extends JavaPlugin {
             return;
         }
         Config.setMain(this);
-        AutoSell.setListOfMaterials(new HashMap<>());
         enable();
     }
 
@@ -65,6 +64,7 @@ public final class SoSeller extends JavaPlugin {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPI(database, this).register();
         }
+        AutoSell.setListOfMaterials(new HashMap<>());
         save("gui/items.yml");
         save("gui/main.yml");
         save("language/en.yml");
