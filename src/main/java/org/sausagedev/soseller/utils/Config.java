@@ -13,7 +13,7 @@ public class Config {
         Config.main = main;
     }
 
-    public static YamlConfiguration getMessages() {
+    public static FileConfiguration getMessages() {
         String lang = main.getConfig().getString("lang", "ru");
         File file = new File(main.getDataFolder(), "language/" + lang + ".yml");
         if (!file.exists()) {
@@ -22,7 +22,7 @@ public class Config {
         return YamlConfiguration.loadConfiguration(file);
     }
 
-    public static YamlConfiguration getMenu(String menu) {
+    public static FileConfiguration getMenu(String menu) {
         if (menu == null) menu = "main";
         File file = new File(main.getDataFolder(), "gui/" + menu + ".yml");
         if (!file.exists()) {

@@ -38,7 +38,7 @@ public class FuctionsListener implements Listener {
         Database database = new Database(main);
 
         String f = tag.getString("SoSeller").toLowerCase();
-        Menu menu = new Menu(database);
+        Menu menu = new Menu();
         String currentMenu = MenuDetect.getMenu();
 
         if (f.contains("move_to-")) {

@@ -1,7 +1,9 @@
 package org.sausagedev.soseller.utils;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.sausagedev.soseller.SoSeller;
 
@@ -72,5 +74,35 @@ public class Utils {
                 plugin.getLogger().warning("Не удалось проверить наличие обновлений: " + ex.getMessage());
             }
         });
+    }
+
+    public static void sendMSG(CommandSender p, String path, String def, String arg) {
+        String msg = Config.getMessages().getString(path, def);
+        msg = msg.replace("{object}", arg);
+        msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) p, msg);
+        p.sendMessage(Utils.convert(msg));
+    }
+
+    public static void sendMSG(CommandSender p, String path, String def) {
+        String msg = Config.getMessages().getString(path, def);
+        msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) p, msg);
+        p.sendMessage(Utils.convert(msg));
+    }
+
+    public static boolean isNotInt(Object o) {
+        try {
+            Integer.parseInt(o.toString());
+        } catch (NumberFormatException e) {
+            return true;
+        }
+        return false;
+    }
+    public static boolean isNotDouble(Object o) {
+        try {
+            Double.parseDouble(o.toString());
+        } catch (NumberFormatException e) {
+            return true;
+        }
+        return false;
     }
 }

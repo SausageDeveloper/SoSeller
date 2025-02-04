@@ -15,10 +15,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PlaceholderAPI extends PlaceholderExpansion {
-    private final Database database;
     private final SoSeller main;
-    public PlaceholderAPI(Database database, SoSeller main) {
-        this.database = database;
+    public PlaceholderAPI(SoSeller main) {
         this.main = main;
     }
 
@@ -34,7 +32,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.9.6";
+        return "1.9.7";
     }
 
     @Override
@@ -48,17 +46,17 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             Player p = op.getPlayer();
             if (p == null) return null;
             UUID uuid = p.getUniqueId();
-            if (database.isClosed(uuid)) return null;
+            if (Database.isClosed(uuid)) return null;
             FileConfiguration config = main.getConfig();
             if (params.equalsIgnoreCase("boost")) {
-                return String.valueOf(database.getBoost(uuid));
+                return String.valueOf(Database.getBoost(uuid));
             }
             if (params.equalsIgnoreCase("globalboost")) {
                 double globalBoost = config.getDouble("global_boost", 1);
                 return String.valueOf(globalBoost);
             }
             if (params.equalsIgnoreCase("items")) {
-                return String.valueOf(database.getItems(uuid));
+                return String.valueOf(Database.getItems(uuid));
             }
             if (params.equalsIgnoreCase("autosell_price")) {
                 return config.getString("auto-sell.cost");
@@ -71,7 +69,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             if (params.contains("priceboost_")) {
                 Map<String, Object> items = config.getConfigurationSection("sell_items").getValues(false);
                 String item = params.replace("priceboost_", "");
-                double boost = database.getBoost(uuid);
+                double boost = Database.getBoost(uuid);
                 double globalBoost = config.getDouble("global_boost", 1);
                 Object intItem = items.get(item);
                 int value = (int) (intItem != null ? intItem : 0);

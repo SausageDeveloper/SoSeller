@@ -19,16 +19,14 @@ import java.util.*;
 
 public class Functions {
     private final SoSeller main;
-    private final Database database;
 
-    public Functions(SoSeller main, Database database) {
+    public Functions(SoSeller main) {
         this.main = main;
-        this.database = database;
     }
 
     public void sellItems(Player p, Inventory inv) {
         UUID uuid = p.getUniqueId();
-        double boost = database.getBoost(uuid);
+        double boost = Database.getBoost(uuid);
         double globalBoost = main.getConfig().getDouble("global_boost", 1);
         Map<String, Object> priceList = main.getConfig().getConfigurationSection("sell_items").getValues(false);
 
@@ -52,7 +50,7 @@ public class Functions {
 
         if (profit == 0 || items == 0) return;
 
-        database.setItems(uuid, database.getItems(uuid) + items);
+        Database.setItems(uuid, Database.getItems(uuid) + items);
 
         String def = "&8 ┃&f Вы продали &e{amount} &fпредметов за &a{profit} &fмонет";
         String msg = Config.getMessages().getString("sold", def);
@@ -63,7 +61,7 @@ public class Functions {
 
     public void sellItem(Player p, ItemStack item, boolean withMessage) {
         UUID uuid = p.getUniqueId();
-        double boost = database.getBoost(uuid);
+        double boost = Database.getBoost(uuid);
         double globalBoost = main.getConfig().getDouble("global_boost", 1);
         Map<String, Object> priceList = main.getConfig().getConfigurationSection("sell_items").getValues(false);
 
@@ -80,7 +78,7 @@ public class Functions {
         main.getEconomy().depositPlayer(p.getName(), money);
         profit += (int) money;
 
-        database.setItems(uuid, database.getItems(uuid) + item.getAmount());
+        Database.setItems(uuid, Database.getItems(uuid) + item.getAmount());
         item.setAmount(0);
 
 
@@ -97,7 +95,7 @@ public class Functions {
         FileConfiguration config = main.getConfig();
         int balance = 0;
         int price = 0;
-        double boost = database.getBoost(uuid);
+        double boost = Database.getBoost(uuid);
         Map<String, Object> boosts = config.getConfigurationSection("boosts").getValues(false);
         String vault = null;
         for (String key : boosts.keySet()) {
@@ -136,7 +134,7 @@ public class Functions {
         }
         else if (vault.equalsIgnoreCase("playerpoints")) balance = main.getPP().look(uuid);
         else if (vault.equalsIgnoreCase("vault")) balance = (int) main.getEconomy().getBalance(p);
-        else if (vault.equalsIgnoreCase("items")) balance = database.getItems(uuid);
+        else if (vault.equalsIgnoreCase("items")) balance = Database.getItems(uuid);
 
         if (balance < price) {
             String def = "&8 ┃&f У вас недостаточно рублей &7{object}/{price}";
@@ -161,8 +159,8 @@ public class Functions {
         }
         else if (vault.equalsIgnoreCase("playerpoints")) main.getPP().take(uuid, price);
         else if (vault.equalsIgnoreCase("vault")) main.getEconomy().withdrawPlayer(p, price);
-        else if (vault.equalsIgnoreCase("items")) database.setItems(uuid, balance - price);
-        database.setBoost(uuid, boost + 0.1);
+        else if (vault.equalsIgnoreCase("items")) Database.setItems(uuid, balance - price);
+        Database.setBoost(uuid, boost + 0.1);
 
         String def = "&8 ┃&f Вы купили буст &3x{boost}";
         String msg = Config.getMessages().getString("buy_boost", def);
@@ -191,7 +189,7 @@ public class Functions {
         }
         else if (vault.equalsIgnoreCase("playerpoints")) balance = main.getPP().look(uuid);
         else if (vault.equalsIgnoreCase("vault")) balance = (int) main.getEconomy().getBalance(p);
-        else if (vault.equalsIgnoreCase("items")) balance = database.getItems(uuid);
+        else if (vault.equalsIgnoreCase("items")) balance = Database.getItems(uuid);
 
         int price = config.getInt("auto-sell.cost", 0);
         if (balance < price) {
@@ -215,9 +213,9 @@ public class Functions {
         }
         else if (vault.equalsIgnoreCase("playerpoints")) main.getPP().take(uuid, price);
         else if (vault.equalsIgnoreCase("vault")) main.getEconomy().withdrawPlayer(p, price);
-        else if (vault.equalsIgnoreCase("items")) database.setItems(uuid, balance - price);
+        else if (vault.equalsIgnoreCase("items")) Database.setItems(uuid, balance - price);
 
-        database.setAutoSellBought(uuid, true);
+        Database.setAutoSellBought(uuid, true);
         if (AutoSell.isEnabled(uuid)) AutoSell.disable(uuid);
 
         if (allInclude) {
@@ -236,7 +234,7 @@ public class Functions {
     public void offOnAutoSellItem(Player p, Material material) {
         UUID uuid = p.getUniqueId();
         boolean itemEnabled = AutoSell.isEnabled(uuid, material);
-        if (!database.isBoughtAutoSell(uuid)) return;
+        if (!Database.isBoughtAutoSell(uuid)) return;
         else if (itemEnabled) {
             AutoSell.disableMaterial(uuid, material);
             return;

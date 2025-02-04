@@ -62,7 +62,7 @@ public final class SoSeller extends JavaPlugin {
         }
         Database database = new Database(this);
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPI(database, this).register();
+            new PlaceholderAPI(this).register();
         }
         AutoSell.setListOfMaterials(new HashMap<>());
         save("gui/items.yml");
@@ -78,8 +78,8 @@ public final class SoSeller extends JavaPlugin {
                 throw new RuntimeException(e);
             }
         }
-        Functions functions = new Functions(this, database);
-        getCommand("soseller").setExecutor(new Commands(this, database));
+        Functions functions = new Functions(this);
+        getCommand("soseller").setExecutor(new Commands(this));
         getCommand("soseller").setTabCompleter(new TabCompleter());
         getServer().getPluginManager().registerEvents(new FuctionsListener(this, functions), this);
         getServer().getPluginManager().registerEvents(new MenuListener(), this);

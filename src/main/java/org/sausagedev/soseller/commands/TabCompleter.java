@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TabCompleter implements org.bukkit.command.TabCompleter {
@@ -17,35 +17,33 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, @NotNull String[] args) {
         if (!cmd.getName().equalsIgnoreCase("soseller")) return null;
         Player p = Bukkit.getPlayer(sender.getName());
-        if (p == null) return null;
-        if (!p.hasPermission("soseller.admin")) return null;
+        if (p == null || !p.hasPermission("soseller.admin")) return null;
         int length = args.length;
         if (length == 1) return Arrays.asList("help", "admin", "reload");
-        String arg1 = args[1].toLowerCase();
+        String arg2 = args[1].toLowerCase();
+
         if (!args[0].equalsIgnoreCase("admin")) return null;
-        if (length == 2) {
-            return Arrays.asList("boost", "globalboost", "items", "auto-sell");
+        if (length == 2) return Arrays.asList("boost", "globalboost", "items", "autosell");
+        switch (arg2) {
+            case "boost":
+                if (length == 3) return null;
+                else if (length == 4) return Arrays.asList("set", "add", "take");
+                else if (length == 5) return Arrays.asList("0.5", "1.0", "2.0");
+                else return Collections.emptyList();
+            case "globalboost":
+                if (length == 3) return Arrays.asList("set", "add", "take");
+                else if (length == 4) return Arrays.asList("0.5", "1.0", "2.0");
+                else return Collections.emptyList();
+            case "items":
+                if (length == 3) return null;
+                else if (length == 4) return Arrays.asList("set", "add", "take");
+                else if (length == 5) return Arrays.asList("10", "25", "50");
+                else return Collections.emptyList();
+            case "autosell":
+                if (length == 3) return null;
+                else if (length == 4) return Arrays.asList("give", "remove");
+                else return Collections.emptyList();
         }
-        if (length == 3 && arg1.equals("globalboost")) {
-            return Arrays.asList("set", "add", "take");
-        }
-        if (length == 4) {
-            if (arg1.equals("autosell")) {
-                return Arrays.asList("give", "remove");
-            }
-            if (arg1.equals("globalboost")) {
-                return Arrays.asList("0.1", "0.5", "1.0");
-            }
-            return Arrays.asList("set", "add", "take");
-        }
-        if (length == 5) {
-            if (arg1.equals("autosell")) return null;
-            if (arg1.equals("globalboost")) return null;
-            if (arg1.equals("boost")) {
-                return Arrays.asList("0.1", "0.5", "1.0");
-            }
-            return Arrays.asList("1", "5", "10");
-        }
-        return null;
+        return Collections.emptyList();
     }
 }

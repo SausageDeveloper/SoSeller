@@ -12,13 +12,13 @@ import java.text.DecimalFormat;
 import java.util.UUID;
 
 public class Database {
-    private final SoSeller main;
+    private static SoSeller main;
 
     public Database(SoSeller main) {
-        this.main = main;
+        Database.main = main;
     }
 
-    public void setItems(UUID uuid, int items) {
+    public static void setItems(UUID uuid, int items) {
         try {
             Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
@@ -39,7 +39,7 @@ public class Database {
             e.printStackTrace();
         }
     }
-    public void setAutoSellBought(UUID uuid, boolean autoSell) {
+    public static void setAutoSellBought(UUID uuid, boolean autoSell) {
         try {
             Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
@@ -61,7 +61,7 @@ public class Database {
         }
     }
 
-    public void setBoost(UUID uuid, double boost) {
+    public static void setBoost(UUID uuid, double boost) {
         try {
             Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
@@ -83,7 +83,7 @@ public class Database {
         }
     }
 
-    public void add(UUID uuid, Connection connection) throws SQLException {
+    private static void add(UUID uuid, Connection connection) throws SQLException {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return;
         PreparedStatement ps = connection.prepareStatement("INSERT INTO database(" +
@@ -101,7 +101,7 @@ public class Database {
         ps.close();
     }
 
-    public int getItems(UUID uuid) {
+    public static int getItems(UUID uuid) {
         try {
             Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT items FROM database WHERE uuid = ?");
@@ -120,7 +120,7 @@ public class Database {
         return 0;
     }
 
-    public double getBoost(UUID uuid) {
+    public static double getBoost(UUID uuid) {
         try {
             Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT boost FROM database WHERE uuid = ?");
@@ -140,7 +140,7 @@ public class Database {
         return 1.0;
     }
 
-    public boolean isBoughtAutoSell(UUID uuid) {
+    public static boolean isBoughtAutoSell(UUID uuid) {
         if (main.getConfig().getInt("auto-sell.cost", 0) <= 0) return true;
         try {
             Connection connection = main.getConnection();
@@ -160,7 +160,7 @@ public class Database {
         return false;
     }
 
-    public boolean isClosed(UUID uuid) {
+    public static boolean isClosed(UUID uuid) {
         try {
             Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");

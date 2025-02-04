@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.sausagedev.soseller.Functions;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.utils.AutoSell;
+import org.sausagedev.soseller.utils.Config;
 import org.sausagedev.soseller.utils.Database;
 
 import java.util.Map;
@@ -30,7 +31,7 @@ public class AutoSellListener implements Listener {
         ItemStack item = e.getItem().getItemStack();
         boolean itemEnabled = AutoSell.isEnabled(uuid, item.getType());
         if (isDefault(item) || !itemEnabled) return;
-        boolean withMsg = main.getConfig().getBoolean("auto-sell.message", false);
+        boolean withMsg = Config.getSettings().getBoolean("auto-sell.message", false);
         functions.sellItem(p, item, withMsg);
         e.setCancelled(true);
         e.getItem().remove();
