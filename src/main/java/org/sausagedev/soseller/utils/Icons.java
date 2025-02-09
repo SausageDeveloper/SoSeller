@@ -44,7 +44,7 @@ public class Icons {
         boolean enchantsExists = enchantsSection != null;
 
         ItemStack reserveItem = new ItemStack(material != null ? material : Material.AIR);
-        ItemStack item = baseHead ? SkullCreator.createSkullWithBase64(materialID, UUID.randomUUID()) : reserveItem;
+        ItemStack item = baseHead ? SkullCreator.itemFromBase64(materialID) : reserveItem;
         ItemBuilder itemBuilder = new ItemBuilder(item)
                 .modelData(modelData)
                 .amount(amount)
