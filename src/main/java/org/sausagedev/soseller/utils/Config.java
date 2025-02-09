@@ -2,16 +2,13 @@ package org.sausagedev.soseller.utils;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.sausagedev.soseller.SoSeller;
 
 import java.io.File;
 
 public class Config {
-    private static SoSeller main;
-
-    public Config(SoSeller main) {
-        Config.main = main;
-    }
+    private static final SoSeller main = SoSeller.getPlugin();
 
     public static FileConfiguration getMessages() {
         String lang = main.getConfig().getString("lang", "ru");
@@ -33,9 +30,5 @@ public class Config {
 
     public static FileConfiguration getSettings() {
         return main.getConfig();
-    }
-
-    public static void setMain(SoSeller main) {
-        Config.main = main;
     }
 }

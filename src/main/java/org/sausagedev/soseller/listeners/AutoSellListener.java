@@ -5,23 +5,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
-import org.sausagedev.soseller.Functions;
 import org.sausagedev.soseller.SoSeller;
+import org.sausagedev.soseller.functions.Selling;
 import org.sausagedev.soseller.utils.AutoSell;
 import org.sausagedev.soseller.utils.Config;
-import org.sausagedev.soseller.utils.Database;
+import org.sausagedev.soseller.utils.Utils;
 
 import java.util.Map;
 import java.util.UUID;
 
 public class AutoSellListener implements Listener {
-    private final Functions functions;
-    private final SoSeller main;
-
-    public AutoSellListener(Functions functions, SoSeller main) {
-        this.functions = functions;
-        this.main = main;
-    }
+    private final Selling selling = new Selling();
+    private final SoSeller main = SoSeller.getPlugin();
 
     @EventHandler
     public void onPlayerPickupItem(PlayerPickupItemEvent e) {
@@ -32,10 +27,10 @@ public class AutoSellListener implements Listener {
         boolean itemEnabled = AutoSell.isEnabled(uuid, item.getType());
         if (isDefault(item) || !itemEnabled) return;
         boolean withMsg = Config.getSettings().getBoolean("auto-sell.message", false);
-        functions.sellItem(p, item, withMsg);
+        selling.sellItem(p, item, withMsg);
         e.setCancelled(true);
         e.getItem().remove();
-        functions.playSound(p, "onAutoSellItems");
+        Utils.playSound(p, "onAutoSellItems");
     }
 
     public boolean isDefault(ItemStack item) {

@@ -10,95 +10,104 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class Database {
-    private static SoSeller main;
-
-    public Database(SoSeller main) {
-        Database.main = main;
-    }
+    private static final SoSeller main = SoSeller.getPlugin();
 
     public static void setItems(UUID uuid, int items) {
-        try {
-            Connection connection = main.getConnection();
-            PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
-            ps.setString(1, uuid.toString());
-            ResultSet resultSet = ps.executeQuery();
+        CompletableFuture.runAsync(() -> {
+            try {
+                Connection connection = main.getConnection();
+                PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
+                ps.setString(1, uuid.toString());
+                ResultSet resultSet = ps.executeQuery();
 
-            if (!resultSet.next()) {
-                add(uuid, connection);
+                if (!resultSet.next()) {
+                    add(uuid, connection);
+                }
+                PreparedStatement ps2 = connection.prepareStatement("UPDATE database SET items = ? WHERE uuid = ?");
+                ps2.setString(2, uuid.toString());
+                ps2.setInt(1, items);
+                ps2.executeUpdate();
+                ps2.close();
+                ps.close();
+            } catch (SQLException e) {
+                main.getLogger().severe("SQLException error: " + e.getCause());
+                e.printStackTrace();
             }
-            PreparedStatement ps2 = connection.prepareStatement("UPDATE database SET items = ? WHERE uuid = ?");
-            ps2.setString(2, uuid.toString());
-            ps2.setInt(1, items);
-            ps2.executeUpdate();
-            ps2.close();
-            ps.close();
-        } catch (SQLException e) {
-            main.getLogger().severe("SQLException error: " + e.getCause());
-            e.printStackTrace();
-        }
+        });
     }
     public static void setAutoSellBought(UUID uuid, boolean autoSell) {
-        try {
-            Connection connection = main.getConnection();
-            PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
-            ps.setString(1, uuid.toString());
-            ResultSet resultSet = ps.executeQuery();
+        CompletableFuture.runAsync(() -> {
+            try {
+                Connection connection = main.getConnection();
+                PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
+                ps.setString(1, uuid.toString());
+                ResultSet resultSet = ps.executeQuery();
 
-            if (!resultSet.next()) {
-                add(uuid, connection);
+                if (!resultSet.next()) {
+                    add(uuid, connection);
+                }
+                PreparedStatement ps2 = connection.prepareStatement("UPDATE database SET autosell = ? WHERE uuid = ?");
+                ps2.setString(2, uuid.toString());
+                ps2.setBoolean(1, autoSell);
+                ps2.executeUpdate();
+                ps2.close();
+                ps.close();
+            } catch (SQLException e) {
+                main.getLogger().severe("SQLException error: " + e.getCause());
+                e.printStackTrace();
             }
-            PreparedStatement ps2 = connection.prepareStatement("UPDATE database SET autosell = ? WHERE uuid = ?");
-            ps2.setString(2, uuid.toString());
-            ps2.setBoolean(1, autoSell);
-            ps2.executeUpdate();
-            ps2.close();
-            ps.close();
-        } catch (SQLException e) {
-            main.getLogger().severe("SQLException error: " + e.getCause());
-            e.printStackTrace();
-        }
+        });
     }
 
     public static void setBoost(UUID uuid, double boost) {
-        try {
-            Connection connection = main.getConnection();
-            PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
-            ps.setString(1, uuid.toString());
-            ResultSet resultSet = ps.executeQuery();
+        CompletableFuture.runAsync(() -> {
+            try {
+                Connection connection = main.getConnection();
+                PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
+                ps.setString(1, uuid.toString());
+                ResultSet resultSet = ps.executeQuery();
 
-            if (!resultSet.next()) {
-                add(uuid, connection);
+                if (!resultSet.next()) {
+                    add(uuid, connection);
+                }
+                PreparedStatement ps2 = connection.prepareStatement("UPDATE database SET boost = ? WHERE uuid = ?");
+                ps2.setString(2, uuid.toString());
+                ps2.setDouble(1, boost);
+                ps2.executeUpdate();
+                ps2.close();
+                ps.close();
+            } catch (SQLException e) {
+                main.getLogger().severe("SQLException error: " + e.getCause());
+                e.printStackTrace();
             }
-            PreparedStatement ps2 = connection.prepareStatement("UPDATE database SET boost = ? WHERE uuid = ?");
-            ps2.setString(2, uuid.toString());
-            ps2.setDouble(1, boost);
-            ps2.executeUpdate();
-            ps2.close();
-            ps.close();
-        } catch (SQLException e) {
-            main.getLogger().severe("SQLException error: " + e.getCause());
-            e.printStackTrace();
-        }
+        });
     }
 
     private static void add(UUID uuid, Connection connection) throws SQLException {
-        Player player = Bukkit.getPlayer(uuid);
-        if (player == null) return;
-        PreparedStatement ps = connection.prepareStatement("INSERT INTO database(" +
-                "uuid, " +
-                "nick, " +
-                "items, " +
-                "boost, " +
-                "autosell) VALUES (?, ?, ?, ?, ?)");
-        ps.setString(1, uuid.toString());
-        ps.setString(2, player.getName());
-        ps.setInt(3, 0);
-        ps.setDouble(4, 1);
-        ps.setBoolean(5, false);
-        ps.executeUpdate();
-        ps.close();
+        CompletableFuture.runAsync(() -> {
+            try {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player == null) return;
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO database(" +
+                        "uuid, " +
+                        "nick, " +
+                        "items, " +
+                        "boost, " +
+                        "autosell) VALUES (?, ?, ?, ?, ?)");
+                ps.setString(1, uuid.toString());
+                ps.setString(2, player.getName());
+                ps.setInt(3, 0);
+                ps.setDouble(4, 1);
+                ps.setBoolean(5, false);
+                ps.executeUpdate();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public static int getItems(UUID uuid) {
@@ -156,7 +165,6 @@ public class Database {
             main.getLogger().severe("SQLException error: " + e.getCause());
             e.printStackTrace();
         }
-
         return false;
     }
 

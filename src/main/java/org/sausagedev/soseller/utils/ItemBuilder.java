@@ -6,23 +6,26 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class ItemBuilder {
     private ItemStack item;
-    private String function;
+    private String function = null;
     private Material material;
     private int amount;
-    private final ItemMeta meta;
+    private ItemMeta meta = null;
     private int model_data;
     private String name;
     private List<String> lore = new ArrayList<>();
     private List<ItemFlag> flags = new ArrayList<>();
-    private Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
+    private Map<Enchantment, Integer> enchants = new HashMap<>();
 
-    public ItemBuilder(ItemStack item) {
+    public ItemBuilder(@NotNull ItemStack item) {
         this.item = new ItemStack(item);
+        NBTItem nbt = new NBTItem(item);
+        if (nbt.hasTag("SoSeller")) function = nbt.getString("SoSeller");
         material = item.getType();
         amount = item.getAmount();
         enchants.putAll(item.getEnchantments());
@@ -132,5 +135,9 @@ public class ItemBuilder {
 
     public Map<Enchantment, Integer> enchants() {
         return enchants;
+    }
+
+    public boolean hasFunction() {
+        return function != null;
     }
 }

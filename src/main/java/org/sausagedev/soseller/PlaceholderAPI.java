@@ -6,11 +6,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.sausagedev.soseller.utils.Config;
 import org.sausagedev.soseller.utils.Database;
-import org.sausagedev.soseller.utils.Utils;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,7 +29,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.9.7";
+        return "1.9.8";
     }
 
     @Override

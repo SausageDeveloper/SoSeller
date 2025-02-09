@@ -23,10 +23,7 @@ public class Icons {
 
     public static ItemStack prepareDefaultItem(String path, String menu) {
         ConfigurationSection section = Config.getMenu(menu).getConfigurationSection(path);
-        if (section == null) {
-            System.out.println("Section " + path + " is null");
-            return null;
-        }
+        if (section == null) return null;
         String materialID = section.getString("material", "BEDROCK");
         Material material = Material.matchMaterial(materialID);
         boolean baseHead = materialID.contains("basehead-");
@@ -46,7 +43,8 @@ public class Icons {
         ConfigurationSection enchantsSection = section.getConfigurationSection("enchants");
         boolean enchantsExists = enchantsSection != null;
 
-        ItemStack item = baseHead ? SkullCreator.itemFromBase64(materialID) : new ItemStack(material != null ? material : Material.AIR);
+        ItemStack reserveItem = new ItemStack(material != null ? material : Material.AIR);
+        ItemStack item = baseHead ? SkullCreator.createSkullWithBase64(materialID, UUID.randomUUID()) : reserveItem;
         ItemBuilder itemBuilder = new ItemBuilder(item)
                 .modelData(modelData)
                 .amount(amount)

@@ -1,7 +1,5 @@
 package org.sausagedev.soseller.listeners;
 
-import de.tr7zw.nbtapi.NBTCompound;
-import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,6 +10,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.sausagedev.soseller.utils.ItemBuilder;
 
 import java.util.Arrays;
 
@@ -21,23 +20,22 @@ public class MenuListener implements Listener {
     public void onInventoryClick(InventoryClickEvent e) {
         ItemStack item = e.getCurrentItem();
         if (item == null || item.getType() == Material.AIR) return;
-        NBTCompound tag = new NBTItem(item);
-        if (!tag.hasTag("SoSeller")) return;
+        else if (!new ItemBuilder(item).hasFunction()) return;
         e.setCancelled(true);
     }
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent e) {
         ItemStack item = e.getOldCursor();
-        NBTCompound tag = new NBTItem(item);
-        if (!tag.hasTag("SoSeller")) return;
+        if (item.getType().equals(Material.AIR) || !new ItemBuilder(item).hasFunction()) return;
         e.setCancelled(true);
     }
 
     @EventHandler
     public void onSwapItemsEvent(PlayerSwapHandItemsEvent e) {
         ItemStack item = e.getMainHandItem();
-        if (isDefault(item)) return;
+        if (item == null || item.getType().equals(Material.AIR)) return;
+        else if (!new ItemBuilder(item).hasFunction()) return;
         e.setCancelled(true);
     }
 
@@ -48,25 +46,17 @@ public class MenuListener implements Listener {
         if (!isSeller(inv)) return;
         Arrays.asList(inv.getContents()).forEach(item -> {
             if (item == null || item.getType().equals(Material.AIR)) return;
-            NBTItem nbt = new NBTItem(item);
-            if (nbt.hasTag("SoSeller")) return;
+            else if (new ItemBuilder(item).hasFunction()) return;
             getItem(p, item, item.getAmount());
         });
     }
 
     public boolean isSeller(Inventory inv) {
         for (ItemStack item : inv.getContents()) {
-            if (isDefault(item)) continue;
-            NBTItem nbt = new NBTItem(item);
-            if (nbt.hasTag("SoSeller")) return true;
+            if (item == null || item.getType().equals(Material.AIR)) continue;
+            if (new ItemBuilder(item).hasFunction()) return true;
         }
         return false;
-    }
-
-    public boolean isDefault(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) return true;
-        NBTCompound tag = new NBTItem(item);
-        return !tag.hasTag("SoSeller");
     }
 
     public void getItem(Player p, ItemStack item, int count) {

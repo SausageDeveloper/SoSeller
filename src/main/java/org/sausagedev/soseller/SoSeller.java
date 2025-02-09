@@ -14,7 +14,6 @@ import org.sausagedev.soseller.listeners.FuctionsListener;
 import org.sausagedev.soseller.listeners.MenuListener;
 import org.sausagedev.soseller.utils.AutoSell;
 import org.sausagedev.soseller.utils.Config;
-import org.sausagedev.soseller.utils.Database;
 import org.sausagedev.soseller.utils.Utils;
 
 import java.io.File;
@@ -30,25 +29,25 @@ public final class SoSeller extends JavaPlugin {
     private PlayerPointsAPI ppAPI;
     private Connection connection;
     private File database;
+    private static SoSeller plugin;
 
     @Override
     public void onEnable() {
+        plugin = this;
         if (isNotSetEconomy()) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (isNotSetEconomy()) {
                         getLogger().severe("Плагин Vault не был найден! Скачайте его: https://www.spigotmc.org/resources/vault.34315/");
-                        getServer().getPluginManager().disablePlugin(SoSeller.getPlugin(SoSeller.class));
+                        getServer().getPluginManager().disablePlugin(SoSeller.getPlugin());
                         return;
                     }
-                    Config.setMain(SoSeller.this);
                     enable();
                 }
             }.runTaskLater(this, 100);
             return;
         }
-        Config.setMain(this);
         enable();
     }
 
@@ -60,7 +59,6 @@ public final class SoSeller extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("CoinsEngine")) {
             getLogger().info("CoinsEngine подключён");
         }
-        Database database = new Database(this);
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPI(this).register();
         }
@@ -78,19 +76,18 @@ public final class SoSeller extends JavaPlugin {
                 throw new RuntimeException(e);
             }
         }
-        Functions functions = new Functions(this);
         getCommand("soseller").setExecutor(new Commands(this));
         getCommand("soseller").setTabCompleter(new TabCompleter());
-        getServer().getPluginManager().registerEvents(new FuctionsListener(this, functions), this);
+        getServer().getPluginManager().registerEvents(new FuctionsListener(), this);
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
-        getServer().getPluginManager().registerEvents(new AutoSellListener(functions, this), this);
+        getServer().getPluginManager().registerEvents(new AutoSellListener(), this);
         saveDefaultConfig();
         createDataBase();
 
         if (!getConfig().getBoolean("check_update")) return;
         Utils.checkUpdates(this, version -> {
             if (getDescription().getVersion().equals(version)) {
-                String def = "Вы используете последнуюю версию!";
+                String def = "Вы используете последнюю версию!";
                 String msg = Config.getMessages().getString("last_version", def);
                 getLogger().info(msg);
             } else {
@@ -156,5 +153,9 @@ public final class SoSeller extends JavaPlugin {
     }
     public Connection getConnection() {
         return connection;
+    }
+
+    public static SoSeller getPlugin() {
+        return plugin;
     }
 }
