@@ -88,7 +88,7 @@ public class Database {
                 ps2.close();
                 ps.close();
             } catch (SQLException e) {
-                main.getLogger().severe("SQLException error: " + e.getCause());
+                main.getLogger().severe("SQLException errors: " + e.getCause());
                 e.printStackTrace();
             }
         });
