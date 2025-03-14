@@ -12,6 +12,7 @@ import org.sausagedev.soseller.commands.TabCompleter;
 import org.sausagedev.soseller.listeners.AutoSellListener;
 import org.sausagedev.soseller.listeners.FuctionsListener;
 import org.sausagedev.soseller.listeners.MenuListener;
+import org.sausagedev.soseller.listeners.PlayerJoinListener;
 import org.sausagedev.soseller.utils.AutoSell;
 import org.sausagedev.soseller.utils.Config;
 import org.sausagedev.soseller.utils.Utils;
@@ -81,6 +82,7 @@ public final class SoSeller extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FuctionsListener(), this);
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
         getServer().getPluginManager().registerEvents(new AutoSellListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         saveDefaultConfig();
         createDataBase();
 
