@@ -38,6 +38,37 @@ public class Database {
             }
         });
     }
+    public static void checkAndCreate(UUID uuid) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                Connection connection = main.getConnection();
+                PreparedStatement ps = connection.prepareStatement(
+                        "SELECT uuid FROM database WHERE uuid = ?"
+                );
+                ps.setString(1, uuid.toString());
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    Player player = main.getServer().getPlayer(uuid);
+                    if (player != null) {
+                        PreparedStatement insertPs = connection.prepareStatement(
+                                "INSERT INTO database(uuid, nick, items, boost, autosell) " +
+                                        "VALUES (?, ?, 0, 1, 0)"
+                        );
+                        insertPs.setString(1, uuid.toString());
+                        insertPs.setString(2, player.getName());
+                        insertPs.executeUpdate();
+                        insertPs.close();
+                    }
+                }
+
+                ps.close();
+                rs.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
     public static void setAutoSellBought(UUID uuid, boolean autoSell) {
         CompletableFuture.runAsync(() -> {
             try {
