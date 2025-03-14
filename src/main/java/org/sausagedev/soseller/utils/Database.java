@@ -38,6 +38,7 @@ public class Database {
             }
         });
     }
+
     public static void checkAndCreate(UUID uuid) {
         CompletableFuture.runAsync(() -> {
             try {
