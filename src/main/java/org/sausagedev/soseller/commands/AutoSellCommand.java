@@ -6,9 +6,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.utils.AutoSell;
 import org.sausagedev.soseller.utils.Config;
-import org.sausagedev.soseller.utils.Database;
 import org.sausagedev.soseller.utils.Utils;
 
 import java.util.UUID;
@@ -22,24 +22,25 @@ public class AutoSellCommand {
             Utils.sendMSG(sender, "null_player_error", def, args[2]);
             return;
         }
-        UUID uuid = t.getUniqueId();
+        DataManager.PlayerData playerData = DataManager.search(t.getUniqueId()), old = playerData.clone();
         switch (args[3]) {
             case "give":
-                Database.setAutoSellBought(uuid, true);
+                playerData.setAutoSellBought(true);
                 break;
             case "remove":
-                Database.setAutoSellBought(uuid, false);
+                playerData.setAutoSellBought(false);
                 break;
         }
+        DataManager.replace(old, playerData);
         FileConfiguration messages = Config.getMessages();
 
         String def = "&8 ┃&f Убран доступ к авто-продаже предметов для &e{player}";
         String msg = messages.getString("autosell_remove", def);
-        if (Database.isBoughtAutoSell(uuid)) {
+        if (playerData.isAutoSellBought()) {
             def = "&8 ┃&f Выдан доступ к авто-продаже предметов для &e{player}";
             msg = messages.getString("autosell_give", def);
         }
-        AutoSell.disable(uuid);
+        AutoSell.disable(t.getUniqueId());
 
         msg = msg.replace("{player}", t.getName());
         msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, msg);

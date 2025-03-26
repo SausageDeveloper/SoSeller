@@ -1,14 +1,15 @@
 package org.sausagedev.soseller.utils;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.sausagedev.soseller.SoSeller;
+import org.sausagedev.soseller.gui.CustomHolder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -126,5 +127,42 @@ public class Utils {
             String msg = "Звук " + sound + " не существует в майнкрафте (Путь: " + "sounds." + path + ")";
             main.getLogger().warning(msg);
         }
+    }
+
+    public static void getItem(Player p, ItemStack item, int count) {
+        Inventory inv = p.getInventory();
+        for (int slot = 0; slot < 36; slot++) {
+            ItemStack currentItem = inv.getItem(slot);
+            if (currentItem == null || currentItem.getType().equals(Material.AIR)) {
+                int stackSize = Math.min(count, item.getMaxStackSize());
+                item.setAmount(stackSize);
+                inv.setItem(slot, item);
+                count -= stackSize;
+                if (count == 0) return;
+            } else if (currentItem.isSimilar(item)) {
+                int currentAmount = currentItem.getAmount();
+                int maxStackSize = item.getMaxStackSize();
+                if (currentAmount < maxStackSize) {
+                    int stackSize = Math.min(count, maxStackSize - currentAmount);
+                    currentItem.setAmount(currentAmount + stackSize);
+                    inv.setItem(slot, currentItem);
+                    count -= stackSize;
+                    if (count == 0) return;
+                }
+            }
+        }
+        while (count > 0) {
+            int dropCount = Math.min(count, item.getMaxStackSize());
+            ItemStack dropItem = item.clone();
+            dropItem.setAmount(dropCount);
+            p.getWorld().dropItem(p.getLocation(), dropItem);
+            count -= dropCount;
+        }
+    }
+
+    public static boolean isDefaultInv(Inventory inv) {
+        if (inv == null) return true;
+        InventoryHolder holder = inv.getHolder();
+        return (!(holder instanceof CustomHolder));
     }
 }

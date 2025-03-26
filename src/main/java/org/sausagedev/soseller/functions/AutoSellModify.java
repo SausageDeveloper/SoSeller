@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.sausagedev.soseller.SoSeller;
+import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.utils.*;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
@@ -19,6 +20,7 @@ public class AutoSellModify {
     public void buyAutoSell(Player p) {
         Checks checks = new Checks(p);
         UUID uuid = p.getUniqueId();
+        DataManager.PlayerData playerData = DataManager.search(uuid), old = playerData.clone();
         String vault = config.getString("boosts.value", "vault").toLowerCase();
         int balance = 0;
 
@@ -37,7 +39,7 @@ public class AutoSellModify {
                 balance = (int) main.getEconomy().getBalance(p);
                 break;
             case "items":
-                balance = Database.getItems(uuid);
+                balance = playerData.getItems();
                 break;
         }
 
@@ -51,7 +53,6 @@ public class AutoSellModify {
             CoinsEngineAPI.removeBalance(p, currency, price);
         }
 
-        int finalBalance = balance;
         CompletableFuture.runAsync(() -> {
             switch (vault) {
                 case "playerpoints":
@@ -61,14 +62,15 @@ public class AutoSellModify {
                     main.getEconomy().withdrawPlayer(p, price);
                     break;
                 case "items":
-                    Database.setItems(uuid, finalBalance - price);
+                    playerData.takeItems(price);
                     break;
             }
 
-            Database.setAutoSellBought(uuid, true);
+            playerData.setAutoSellBought(true);
             if (AutoSell.isEnabled(uuid)) AutoSell.disable(uuid);
         });
 
+        DataManager.replace(old, playerData);
         String def = "&8 ┃&f Вы купили доступ к авто-продаже предметов";
         String msg = messages.getString("messages.buy_autosell", def);
         p.sendMessage(Utils.convert(msg));
@@ -78,8 +80,9 @@ public class AutoSellModify {
     public void offOnAutoSellItem(Player p, Material material) {
         CompletableFuture.runAsync(() -> {
             UUID uuid = p.getUniqueId();
+            DataManager.PlayerData playerData = DataManager.search(uuid);
             boolean itemEnabled = AutoSell.isEnabled(uuid, material);
-            if (!Database.isBoughtAutoSell(uuid)) return;
+            if (!playerData.isAutoSellBought()) return;
             else if (itemEnabled) {
                 AutoSell.disableMaterial(uuid, material);
                 return;

@@ -1,13 +1,28 @@
 package org.sausagedev.soseller.utils;
 
-public class MenuDetect {
-    private static String menu;
+import org.bukkit.entity.Player;
 
-    public static void setMenu(String menu) {
-        MenuDetect.menu = menu;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+public class MenuDetect {
+    private static final Map<UUID, String> menu = new HashMap<>();
+
+    public static void setMenu(UUID uuid, String menu) {
+        MenuDetect.menu.put(uuid, menu);
     }
 
-    public static String getMenu() {
-        return menu != null ? menu : "main";
+    public static String getMenu(UUID uuid) {
+        return menu.get(uuid);
+    }
+
+    public static Set<UUID> getViewers() {
+        return menu.keySet();
+    }
+
+    public static void remove(Player p) {
+        menu.remove(p.getUniqueId());
     }
 }

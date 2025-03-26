@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.sausagedev.soseller.utils.Database;
+import org.sausagedev.soseller.database.DataManager;
 
 import java.util.Map;
 import java.util.UUID;
@@ -42,18 +42,17 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         if (op != null && op.isOnline()) {
             Player p = op.getPlayer();
             if (p == null) return null;
-            UUID uuid = p.getUniqueId();
-            if (Database.isClosed(uuid)) return null;
+            DataManager.PlayerData playerData = DataManager.search(p.getUniqueId());
             FileConfiguration config = main.getConfig();
             if (params.equalsIgnoreCase("boost")) {
-                return String.valueOf(Database.getBoost(uuid));
+                return String.valueOf(playerData.getBoost());
             }
             if (params.equalsIgnoreCase("globalboost")) {
                 double globalBoost = config.getDouble("global_boost", 1);
                 return String.valueOf(globalBoost);
             }
             if (params.equalsIgnoreCase("items")) {
-                return String.valueOf(Database.getItems(uuid));
+                return String.valueOf(playerData.getItems());
             }
             if (params.equalsIgnoreCase("autosell_price")) {
                 return config.getString("auto-sell.cost");
@@ -66,7 +65,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             if (params.contains("priceboost_")) {
                 Map<String, Object> items = config.getConfigurationSection("sell_items").getValues(false);
                 String item = params.replace("priceboost_", "");
-                double boost = Database.getBoost(uuid);
+                double boost = playerData.getBoost();
                 double globalBoost = config.getDouble("global_boost", 1);
                 Object intItem = items.get(item);
                 int value = (int) (intItem != null ? intItem : 0);

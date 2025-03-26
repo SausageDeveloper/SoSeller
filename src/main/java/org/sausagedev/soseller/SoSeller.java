@@ -7,8 +7,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.sausagedev.soseller.bstats.Metrics;
 import org.sausagedev.soseller.commands.Commands;
 import org.sausagedev.soseller.commands.TabCompleter;
+import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.listeners.AutoSellListener;
 import org.sausagedev.soseller.listeners.FuctionsListener;
 import org.sausagedev.soseller.listeners.MenuListener;
@@ -49,6 +51,8 @@ public final class SoSeller extends JavaPlugin {
             return;
         }
         enable();
+
+        Metrics metrics = new Metrics(this, 25259);
     }
 
     public void enable() {
@@ -84,6 +88,8 @@ public final class SoSeller extends JavaPlugin {
         saveDefaultConfig();
         createDataBase();
 
+        DataManager.importData(connection);
+
         if (!getConfig().getBoolean("check_update")) return;
         Utils.checkUpdates(this, version -> {
             if (getDescription().getVersion().equals(version)) {
@@ -101,6 +107,7 @@ public final class SoSeller extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        DataManager.exportData(connection);
         try {
             if (getConnection() != null && !getConnection().isClosed()) {
                 getConnection().close();

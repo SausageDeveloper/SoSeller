@@ -5,11 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.utils.Config;
-import org.sausagedev.soseller.utils.Database;
 import org.sausagedev.soseller.utils.Utils;
-
-import java.util.UUID;
 
 public class ItemsCommand {
 
@@ -20,28 +18,29 @@ public class ItemsCommand {
             Utils.sendMSG(sender, "null_player_error", def, args[2]);
             return;
         }
-        UUID uuid = t.getUniqueId();
         if (Utils.isNotInt(args[4])) {
             String def = "&8 ┃&f Неверное число: {object}";
             Utils.sendMSG(sender, "number_format_error", def, args[4]);
             return;
         }
-        int items = Database.getItems(uuid);
         int n = Integer.parseInt(args[4]);
+        DataManager.PlayerData playerData = DataManager.search(t.getUniqueId()), old = playerData.clone();
+        int items = playerData.getItems();
         switch (args[3]) {
             case "set":
-                Database.setItems(uuid, n);
+                playerData.setItems(n);
                 break;
             case "add":
-                Database.setItems(uuid, items + n);
+                playerData.addItems(n);
                 break;
             case "take":
                 if (items <= 0) return;
-                Database.setItems(uuid, items - n);
+                playerData.takeItems(n);
                 break;
-
         }
-        items = Database.getItems(uuid);
+
+        DataManager.replace(old, playerData);
+        items = playerData.getItems();
         String def = "&8 ┃&f Установлено на &e{amount} &fпроданные предметы &e{player}";
         String msg = Config.getMessages().getString("items_modify", def);
         msg = msg.replace("{player}", t.getName());

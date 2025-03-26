@@ -3,9 +3,9 @@ package org.sausagedev.soseller.functions;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.sausagedev.soseller.SoSeller;
+import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.utils.Checks;
 import org.sausagedev.soseller.utils.Config;
-import org.sausagedev.soseller.utils.Database;
 import org.sausagedev.soseller.utils.Utils;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
@@ -22,10 +22,11 @@ public class BoostsModify {
     public void buyBoost(Player p) {
         Checks checks = new Checks(p);
         UUID uuid = p.getUniqueId();
+        DataManager.PlayerData playerData = DataManager.search(uuid);
         FileConfiguration config = main.getConfig();
         int balance = 0;
         int price = 0;
-        double boost = Database.getBoost(uuid);
+        double boost = playerData.getBoost();
         Map<String, Object> boosts = config.getConfigurationSection("boosts").getValues(false);
         String vault = null;
         for (String key : boosts.keySet()) {
@@ -56,7 +57,7 @@ public class BoostsModify {
                 balance = (int) main.getEconomy().getBalance(p);
                 break;
             case "items":
-                balance = Database.getItems(uuid);
+                balance = playerData.getItems();
                 break;
         }
 
@@ -70,7 +71,6 @@ public class BoostsModify {
         }
 
         int finalPrice = price;
-        int finalBalance = balance;
         String finalVault = vault;
         CompletableFuture.runAsync(() -> {
             switch (finalVault) {
@@ -81,10 +81,10 @@ public class BoostsModify {
                     main.getEconomy().withdrawPlayer(p, finalPrice);
                     break;
                 case "items":
-                    Database.setItems(uuid, finalBalance - finalPrice);
+                    playerData.takeItems(finalPrice);
                     break;
             }
-            Database.setBoost(uuid, boost + 0.1);
+            playerData.addBoost(0.1);
         });
 
         String def = "&8 ┃&f Вы купили буст &3x{boost}";

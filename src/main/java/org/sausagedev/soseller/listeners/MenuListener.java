@@ -1,41 +1,61 @@
 package org.sausagedev.soseller.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.sausagedev.soseller.utils.ItemBuilder;
+import org.sausagedev.soseller.functions.Selling;
+import org.sausagedev.soseller.utils.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class MenuListener implements Listener {
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent e) {
-        ItemStack item = e.getCurrentItem();
-        if (item == null || item.getType() == Material.AIR) return;
-        else if (!new ItemBuilder(item).hasFunction()) return;
+    void onClickEvent(InventoryClickEvent e) {
+        Player p = Bukkit.getPlayer(e.getWhoClicked().getName());
+        if (p == null) return;
+        List<Integer> slots = SellingFields.getSlots(MenuDetect.getMenu(e.getWhoClicked().getUniqueId()));
+        Inventory topInv = p.getOpenInventory().getTopInventory();
+        Inventory clickedInv = e.getClickedInventory();
+        if (e.getClick().equals(ClickType.SHIFT_LEFT)
+                && !slots.contains(topInv.firstEmpty())
+                && !clickedInv.equals(topInv)) e.setCancelled(true);
+        else if (Utils.isDefaultInv(e.getClickedInventory())
+                || slots.contains(e.getSlot())) return;
         e.setCancelled(true);
     }
 
     @EventHandler
-    public void onInventoryDrag(InventoryDragEvent e) {
-        ItemStack item = e.getOldCursor();
-        if (item.getType().equals(Material.AIR) || !new ItemBuilder(item).hasFunction()) return;
+    void onDragEvent(InventoryDragEvent e) {
+        if (Utils.isDefaultInv(e.getInventory())) return;
+        List<Integer> slots = SellingFields.getSlots(MenuDetect.getMenu(e.getWhoClicked().getUniqueId()));
+        for (Integer slot : e.getInventorySlots()) {
+            if (!slots.contains(slot)) {
+                e.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @EventHandler
+    void onSwapItems(PlayerSwapHandItemsEvent e) {
+        if (Utils.isDefaultInv(e.getPlayer().getInventory())) return;
         e.setCancelled(true);
     }
 
     @EventHandler
-    public void onSwapItemsEvent(PlayerSwapHandItemsEvent e) {
-        ItemStack item = e.getMainHandItem();
-        if (item == null || item.getType().equals(Material.AIR)) return;
-        else if (!new ItemBuilder(item).hasFunction()) return;
+    void onDropItem(PlayerDropItemEvent e) {
+        if (Utils.isDefaultInv(e.getPlayer().getInventory())) return;
         e.setCancelled(true);
     }
 
@@ -43,50 +63,16 @@ public class MenuListener implements Listener {
     public void onCloseInventory(InventoryCloseEvent e) {
         Inventory inv = e.getInventory();
         Player p = (Player) e.getPlayer();
-        if (!isSeller(inv)) return;
-        Arrays.asList(inv.getContents()).forEach(item -> {
-            if (item == null || item.getType().equals(Material.AIR)) return;
-            else if (new ItemBuilder(item).hasFunction()) return;
-            getItem(p, item, item.getAmount());
-        });
-    }
-
-    public boolean isSeller(Inventory inv) {
-        for (ItemStack item : inv.getContents()) {
-            if (item == null || item.getType().equals(Material.AIR)) continue;
-            if (new ItemBuilder(item).hasFunction()) return true;
+        if (Utils.isDefaultInv(inv)) return;
+        MenuDetect.remove(p);
+        if (!Config.getSettings().getBoolean("sell_on_close_inv", false)) {
+            Arrays.asList(inv.getContents()).forEach(item -> {
+                if (item == null || item.getType().equals(Material.AIR)) return;
+                else if (new ItemBuilder(item).hasFunction()) return;
+                Utils.getItem(p, item, item.getAmount());
+            });
+            return;
         }
-        return false;
-    }
-
-    public void getItem(Player p, ItemStack item, int count) {
-        Inventory inv = p.getInventory();
-        for (int slot = 0; slot < 36; slot++) {
-            ItemStack currentItem = inv.getItem(slot);
-            if (currentItem == null || currentItem.getType().equals(Material.AIR)) {
-                int stackSize = Math.min(count, item.getMaxStackSize());
-                item.setAmount(stackSize);
-                inv.setItem(slot, item);
-                count -= stackSize;
-                if (count == 0) return;
-            } else if (currentItem.isSimilar(item)) {
-                int currentAmount = currentItem.getAmount();
-                int maxStackSize = item.getMaxStackSize();
-                if (currentAmount < maxStackSize) {
-                    int stackSize = Math.min(count, maxStackSize - currentAmount);
-                    currentItem.setAmount(currentAmount + stackSize);
-                    inv.setItem(slot, currentItem);
-                    count -= stackSize;
-                    if (count == 0) return;
-                }
-            }
-        }
-        while (count > 0) {
-            int dropCount = Math.min(count, item.getMaxStackSize());
-            ItemStack dropItem = item.clone();
-            dropItem.setAmount(dropCount);
-            p.getWorld().dropItem(p.getLocation(), dropItem);
-            count -= dropCount;
-        }
+        new Selling().sellItems(p, Arrays.asList(inv.getContents()), true);
     }
 }

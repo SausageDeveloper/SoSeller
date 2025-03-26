@@ -10,7 +10,7 @@ icons:
       - 48
     bought:
       enabled:
-        material: basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWEzMzI2YmI1NTI3OTk5NTQzYzU2YTIyYWIzYzIwMmFkNTQ2YzJjOTdkNTIzYjQ4OGVkODg4ZTgwMDNhZTRkMSJ9fX0=
+        material: LIME_DYE
         name: "&3Авто-продажа"
         lore:
           - ""
@@ -22,7 +22,7 @@ icons:
         enchants:
           DURABILITY: 1
       disabled:
-        material: basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODA0YzVjZTEyNTQ1YTdjY2RmMGEzNWI5ZGYwZWY5YmFjMTU4MjZjM2EwNzg2ZTFjZTEwZjNlYzdkMDY1NmY2MSJ9fX0=
+        material: RED_DYE
         name: "&3Авто-продажа"
         lore:
           - ""
@@ -34,7 +34,7 @@ icons:
         enchants:
           DURABILITY: 1
     have_not:
-      material: basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE4ZGZjYTY2ZTQ5N2Y2MjQxZGI2YjFmMmRmZTEzNTMwOWE1NjZjZDZjMDc3NWE5Y2E1NWU1ZmFlZTBjNjA1YSJ9fX0=
+      material: EMERALD
       name: "&cАвто-продажа"
       lore:
         - ""

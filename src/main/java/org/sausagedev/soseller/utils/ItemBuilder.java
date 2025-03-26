@@ -1,21 +1,27 @@
 package org.sausagedev.soseller.utils;
 
-import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.sausagedev.soseller.SoSeller;
 
 import java.util.*;
 
 public class ItemBuilder {
-    private ItemStack item;
+    private final NamespacedKey nk = new NamespacedKey(SoSeller.getPlugin(), "SoSeller");
+
+    private final ItemStack item;
     private String function = null;
     private Material material;
     private int amount;
-    private ItemMeta meta = null;
+    private final ItemMeta meta;
+    private PersistentDataContainer pdc;
     private int model_data;
     private String name;
     private List<String> lore = new ArrayList<>();
@@ -24,14 +30,15 @@ public class ItemBuilder {
 
     public ItemBuilder(@NotNull ItemStack item) {
         this.item = new ItemStack(item);
-        NBTItem nbt = new NBTItem(item);
-        if (nbt.hasTag("SoSeller")) function = nbt.getString("SoSeller");
         material = item.getType();
         amount = item.getAmount();
         enchants.putAll(item.getEnchantments());
         meta = item.getItemMeta();
 
         if (meta != null) {
+            pdc = meta.getPersistentDataContainer();
+            function = pdc.get(nk, PersistentDataType.STRING);
+
             if (meta.hasDisplayName()) {
                 name = meta.getDisplayName();
             }
@@ -44,9 +51,8 @@ public class ItemBuilder {
 
     public ItemBuilder function(String function) {
         this.function = function;
-        NBTItem icon = new NBTItem(item);
-        icon.setString("SoSeller", function);
-        item = icon.getItem();
+        pdc.set(nk, PersistentDataType.STRING, function);
+        item.setItemMeta(meta);
         return this;
     }
 
