@@ -18,6 +18,21 @@ import java.util.concurrent.CompletableFuture;
 
 public class MenuUtils {
 
+    public static Inventory update(Player p, Inventory inv) {
+        if (p == null) return null;
+        for (int n = inv.getSize() - 1; n > -1; n--) {
+            ItemStack itemStack = inv.getItem(n);
+            if (itemStack == null) continue;
+            ItemBuilder item = new ItemBuilder(itemStack);
+            if (item.material().isAir() || !item.hasFunction()) continue;
+            item
+                    .name(me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, item.name()))
+                    .lore(me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, item.lore()));
+            inv.setItem(n, item.item());
+        }
+        return inv;
+    }
+
     public static Inventory generate(Player p, String menu) {
         FileConfiguration config = Config.getMenu(menu);
         FileConfiguration main = Config.getSettings();
@@ -126,6 +141,6 @@ public class MenuUtils {
                 }
             }
         });
-        return inv;
+        return update(p, inv);
     }
 }
