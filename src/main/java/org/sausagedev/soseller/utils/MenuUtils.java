@@ -18,21 +18,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class MenuUtils {
 
-    public static Inventory update(Player p, Inventory inv) {
-        if (p == null) return null;
-        for (int n = inv.getSize() - 1; n > -1; n--) {
-            ItemStack itemStack = inv.getItem(n);
-            if (itemStack == null) continue;
-            ItemBuilder item = new ItemBuilder(itemStack);
-            if (item.material().isAir() || !item.hasFunction()) continue;
-            item
-                    .name(me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, item.name()))
-                    .lore(me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, item.lore()));
-            inv.setItem(n, item.item());
-        }
-        return inv;
-    }
-
     public static Inventory generate(Player p, String menu) {
         FileConfiguration config = Config.getMenu(menu);
         FileConfiguration main = Config.getSettings();
@@ -102,9 +87,9 @@ public class MenuUtils {
                 if (!isLoadItems && !isLoadAutoSellItems) {
                     displayName = Utils.convert(displayName);
                     List<String> l2 = new ArrayList<>();
-                    lines.forEach(line -> l2.add(Utils.convert(line)));
+                    lines.forEach(line -> l2.add(PlaceholderAPI.setPlaceholders(p, Utils.convert(line))));
 
-                    itemBuilder.name(displayName).lore(l2).function(function);
+                    itemBuilder.name(PlaceholderAPI.setPlaceholders(p, displayName)).lore(l2).function(function);
 
                     slots.forEach(slot -> inv.setItem(slot, itemBuilder.item()));
                 } else {
@@ -117,12 +102,14 @@ public class MenuUtils {
                         String d2 = displayName.replace("{item_type}", i);
                         d2 = d2.replace("{item_type_display}", translatedItem);
                         d2 = d2.replace("{can_autosell}", msg);
+                        d2 = PlaceholderAPI.setPlaceholders(p, d2);
                         d2 = Utils.convert(d2);
                         List<String> l2 = new ArrayList<>();
                         lines.forEach(line -> {
                             line = line.replace("{item_type}", i);
                             line = line.replace("{item_type_display}", translatedItem);
                             line = line.replace("{can_autosell}", msg);
+                            line = PlaceholderAPI.setPlaceholders(p, line);
                             l2.add(Utils.convert(line));
                         });
 
@@ -141,6 +128,6 @@ public class MenuUtils {
                 }
             }
         });
-        return update(p, inv);
+        return inv;
     }
 }
