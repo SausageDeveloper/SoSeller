@@ -4,10 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.sausagedev.soseller.SoSeller;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.File;
+import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,10 +14,36 @@ import java.util.UUID;
 
 public class Database {
     private static final SoSeller main = SoSeller.getPlugin();
+    private static Connection connection;
+
+    public Database(File database) {
+        try {
+            Database.connection = DriverManager.getConnection("jdbc:sqlite:" + database);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS database (" +
+                    "uuid TEXT, " +
+                    "nick TEXT, " +
+                    "items INTEGER, " +
+                    "boost DOUBLE, " +
+                    "autosell BOOLEAN)");
+            statement.close();
+        } catch (SQLException e) {
+            main.getLogger().severe("SQLException error: " + e.getCause());
+        }
+    }
+
+    public static void close() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void setItems(UUID uuid, int items) {
         try {
-            Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
             ps.setString(1, uuid.toString());
             PreparedStatement ps2 = connection.prepareStatement("UPDATE database SET items = ? WHERE uuid = ?");
@@ -35,7 +59,6 @@ public class Database {
     }
     public static void setAutoSellBought(UUID uuid, boolean autoSell) {
         try {
-            Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
             ps.setString(1, uuid.toString());
             PreparedStatement ps2 = connection.prepareStatement("UPDATE database SET autosell = ? WHERE uuid = ?");
@@ -52,7 +75,6 @@ public class Database {
 
     public static void setBoost(UUID uuid, double boost) {
         try {
-            Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
             ps.setString(1, uuid.toString());
             PreparedStatement ps2 = connection.prepareStatement("UPDATE database SET boost = ? WHERE uuid = ?");
@@ -67,7 +89,7 @@ public class Database {
         }
     }
 
-    public static void register(UUID uuid, Connection connection) {
+    public static void register(UUID uuid) {
         try {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) return;
@@ -95,7 +117,6 @@ public class Database {
 
     public static int getItems(UUID uuid) {
         try {
-            Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT items FROM database WHERE uuid = ?");
             if (ps.isClosed()) return 0;
             ps.setString(1, uuid.toString());
@@ -117,8 +138,7 @@ public class Database {
         String query = "SELECT uuid FROM database";
 
         try {
-            Connection conn = main.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(query);
+            PreparedStatement pstmt = connection.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
 
             if (pstmt.isClosed()) return Collections.emptyList();
@@ -136,7 +156,6 @@ public class Database {
 
     public static double getBoost(UUID uuid) {
         try {
-            Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT boost FROM database WHERE uuid = ?");
             if (ps.isClosed()) return 1.0;
             ps.setString(1, uuid.toString());
@@ -157,7 +176,6 @@ public class Database {
     public static boolean isBoughtAutoSell(UUID uuid) {
         if (main.getConfig().getInt("auto-sell.cost", 0) <= 0) return true;
         try {
-            Connection connection = main.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT autosell FROM database WHERE uuid = ?");
             if (ps.isClosed()) return false;
             ps.setString(1, uuid.toString());

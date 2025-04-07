@@ -3,34 +3,29 @@ package org.sausagedev.soseller;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
-import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.sausagedev.soseller.bstats.Metrics;
-import org.sausagedev.soseller.commands.Commands;
-import org.sausagedev.soseller.commands.TabCompleter;
+import org.sausagedev.soseller.commands.*;
 import org.sausagedev.soseller.database.DataManager;
+import org.sausagedev.soseller.database.Database;
 import org.sausagedev.soseller.listeners.AutoSellListener;
 import org.sausagedev.soseller.listeners.FuctionsListener;
 import org.sausagedev.soseller.listeners.MenuListener;
 import org.sausagedev.soseller.utils.AutoSell;
-import org.sausagedev.soseller.utils.Config;
+import org.sausagedev.soseller.Configuration.Config;
 import org.sausagedev.soseller.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 
 public final class SoSeller extends JavaPlugin {
-    private Economy econ = null;
+    private Economy econ;
     private PlayerPointsAPI ppAPI;
-    private Connection connection;
-    private File database;
     private static SoSeller plugin;
 
     @Override
@@ -51,96 +46,80 @@ public final class SoSeller extends JavaPlugin {
             return;
         }
         enable();
-
-        Metrics metrics = new Metrics(this, 25259);
     }
 
     public void enable() {
-        if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")) {
+        new Metrics(this, 25259);
+        new Config();
+        PluginManager plManager = getServer().getPluginManager();
+        checkForSupports(plManager);
+        AutoSell.setListOfMaterials(new HashMap<>());
+        saveDatabase();
+        registerCommands();
+        registerListeners(plManager);
+        saveDefaultConfig();
+        DataManager.importData();
+        checkUpdate();
+    }
+
+    @Override
+    public void onDisable() {
+        DataManager.exportData();
+        Database.close();
+    }
+
+    void checkForSupports(PluginManager plManager) {
+        if (plManager.isPluginEnabled("PlayerPoints")) {
             this.ppAPI = PlayerPoints.getInstance().getAPI();
             getLogger().info("PlayerPoints подключён");
         }
-        if (Bukkit.getPluginManager().isPluginEnabled("CoinsEngine")) {
+        if (plManager.isPluginEnabled("CoinsEngine")) {
             getLogger().info("CoinsEngine подключён");
         }
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPI(this).register();
+        if (plManager.getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderAPI().register();
         }
-        AutoSell.setListOfMaterials(new HashMap<>());
-        save("gui/items.yml");
-        save("gui/main.yml");
-        save("language/en.yml");
-        save("language/ru.yml");
-        save("language/uk.yml");
-        this.database = new File(getDataFolder(), "database.db");
-        if (!this.database.exists()) {
+    }
+
+    void saveDatabase() {
+        File database = new File(getDataFolder(), "database.db");
+        if (!database.exists()) {
             try {
-                this.database.createNewFile();
+                database.createNewFile();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        getCommand("soseller").setExecutor(new Commands(this));
-        getCommand("soseller").setTabCompleter(new TabCompleter());
-        getServer().getPluginManager().registerEvents(new FuctionsListener(), this);
-        getServer().getPluginManager().registerEvents(new MenuListener(), this);
-        getServer().getPluginManager().registerEvents(new AutoSellListener(), this);
-        saveDefaultConfig();
-        createDataBase();
+        new Database(database);
+    }
 
-        DataManager.importData(connection);
+    void registerCommands() {
+        PluginCommand plCmd = getCommand("soseller");
+        Commands commands = new Commands(new AutoSellCommand(), new BoostCommand(), new GlobalBoostCommand(), new ItemsCommand());
+        plCmd.setExecutor(commands);
+        plCmd.setTabCompleter(new TabCompleter());
+    }
 
-        if (!getConfig().getBoolean("check_update")) return;
+    void registerListeners(PluginManager plManager) {
+        plManager.registerEvents(new FuctionsListener(), this);
+        plManager.registerEvents(new MenuListener(), this);
+        plManager.registerEvents(new AutoSellListener(), this);
+    }
+
+    void checkUpdate() {
+        if (!Config.settings().checkUpdate()) return;
         Utils.checkUpdates(this, version -> {
             if (getDescription().getVersion().equals(version)) {
-                String def = "Вы используете последнюю версию!";
-                String msg = Config.getMessages().getString("last_version", def);
-                getLogger().info(msg);
+                getLogger().info(Config.messages().lastVersion());
             } else {
-                String def = "Вышла новая версия {version}! Ссылка: https://www.spigotmc.org/resources/soseller.121023/";
-                String msg = Config.getMessages().getString("old_version", def);
+                String msg = Config.messages().oldVersion();
                 msg = msg.replace("{version}", version);
                 getLogger().info(msg);
             }
         });
     }
 
-    @Override
-    public void onDisable() {
-        DataManager.exportData(connection);
-        try {
-            if (getConnection() != null && !getConnection().isClosed()) {
-                getConnection().close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void save(String path) {
-        File file = new File(getDataFolder(), path);
-        if (!file.exists()) {
-            saveResource(path, false);
-        }
-    }
-
-    public void createDataBase() {
-        try {
-            connection = DriverManager.getConnection("jdbc:sqlite:" + database);
-            Statement statement = getConnection().createStatement();
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS database (" +
-                    "uuid TEXT, " +
-                    "nick TEXT, " +
-                    "items INTEGER, " +
-                    "boost DOUBLE, " +
-                    "autosell BOOLEAN)");
-            statement.close();
-        } catch (SQLException e) {
-            getLogger().severe("SQLException error: " + e.getCause());
-        }
-    }
-
-    private boolean isNotSetEconomy() {
+    boolean isNotSetEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return true;
         }
@@ -157,9 +136,6 @@ public final class SoSeller extends JavaPlugin {
     }
     public PlayerPointsAPI getPP() {
         return ppAPI;
-    }
-    public Connection getConnection() {
-        return connection;
     }
 
     public static SoSeller getPlugin() {

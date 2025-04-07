@@ -3,7 +3,6 @@ package org.sausagedev.soseller.database;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,11 +31,10 @@ public class DataManager {
         dataContainer.add(current);
     }
 
-    public static void importData(Connection connection) {
+    public static void importData() {
         Database.getUUIDs().forEach(uuid -> {
             Player p = Bukkit.getPlayer(uuid);
             if (p == null) return;
-            Database.register(uuid, connection);
             PlayerData playerData = new PlayerData(p);
             playerData.setItems(Database.getItems(uuid))
                     .setBoost(Database.getBoost(uuid))
@@ -45,10 +43,10 @@ public class DataManager {
         });
     }
 
-    public static void exportData(Connection connection) {
+    public static void exportData() {
         dataContainer.forEach(playerData -> {
             UUID uuid = playerData.getUUID();
-            Database.register(uuid, connection);
+            Database.register(uuid);
             Database.setItems(uuid, playerData.getItems());
             Database.setBoost(uuid, playerData.getBoost());
             Database.setAutoSellBought(uuid, playerData.isAutoSellBought());

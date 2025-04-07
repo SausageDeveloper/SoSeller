@@ -6,18 +6,24 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.gui.Menu;
-import org.sausagedev.soseller.utils.Config;
+import org.sausagedev.soseller.Configuration.Config;
 import org.sausagedev.soseller.utils.Utils;
 
 import java.util.List;
 
 public class Commands implements CommandExecutor {
-    private final SoSeller main;
+    private final AutoSellCommand autoSellCommand;
+    private final BoostCommand boostCommand;
+    private final GlobalBoostCommand globalBoostCommand;
+    private final ItemsCommand itemsCommand;
 
-    public Commands(SoSeller main) {
-        this.main = main;
+
+    public Commands(AutoSellCommand autoSellCommand, BoostCommand boostCommand, GlobalBoostCommand globalBoostCommand, ItemsCommand itemsCommand) {
+        this.autoSellCommand = autoSellCommand;
+        this.boostCommand = boostCommand;
+        this.globalBoostCommand = globalBoostCommand;
+        this.itemsCommand = itemsCommand;
     }
 
     @Override
@@ -29,36 +35,32 @@ public class Commands implements CommandExecutor {
             return true;
         }
         if (!Utils.hasPerm(sender, "soseller.admin")) return true;
-
         switch (args[0].toLowerCase()) {
             case "help":
-                List<String> list = Config.getMessages().getStringList("help");
+                List<String> list = Config.messages().help();
                 sender.sendMessage(Utils.getStringByList(list));
                 return true;
             case "reload":
-                main.saveDefaultConfig();
-                main.reloadConfig();
-                String def = "&8 ┃&f Конфиг перезагружен";
-                Utils.sendMSG(sender, "config_reload", def);
+                new Config();
+                sender.sendMessage(Utils.convert(Config.messages().configReload()));
             case "admin":
                 if (args.length < 2) return true;
-
                 switch (args[1].toLowerCase()) {
                     case "globalboost":
                         if (args.length != 4) return true;
-                        new GlobalBoostCommand(main).execute(sender, args);
+                        globalBoostCommand.execute(sender, args);
                         return true;
                     case "boost":
                         if (args.length < 5) return true;
-                        new BoostCommand().execute(sender, args);
+                        boostCommand.execute(sender, args);
                         return true;
                     case "items":
                         if (args.length != 5) return true;
-                        new ItemsCommand().execute(sender, args);
+                        itemsCommand.execute(sender, args);
                         return true;
                     case "autosell":
                         if (args.length != 4) return true;
-                        new AutoSellCommand().execute(sender, args);
+                        autoSellCommand.execute(sender, args);
                 }
         }
         return true;

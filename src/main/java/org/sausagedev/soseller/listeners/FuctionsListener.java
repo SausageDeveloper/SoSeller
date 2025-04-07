@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.sausagedev.soseller.Configuration.Config;
 import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.functions.AutoSellModify;
 import org.sausagedev.soseller.functions.BoostsModify;
@@ -59,7 +60,7 @@ public class FuctionsListener implements Listener {
                 menu.open(p, currentMenu);
                 return;
             case "sell_all":
-                boolean withMsg = Config.getSettings().getBoolean("auto-sell.message", false);
+                boolean withMsg = (boolean) Config.settings().autoSell().get("message");
                 selling.sellItems(p, Arrays.asList(e.getInventory().getContents()), withMsg);
                 menu.open(p, currentMenu);
                 return;

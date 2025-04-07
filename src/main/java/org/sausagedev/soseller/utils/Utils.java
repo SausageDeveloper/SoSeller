@@ -3,11 +3,11 @@ package org.sausagedev.soseller.utils;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.sausagedev.soseller.Configuration.Config;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.gui.CustomHolder;
 
@@ -23,8 +23,6 @@ import java.util.regex.Pattern;
 
 public class Utils {
     private static final Pattern HEX_PATTERN = Pattern.compile("(?i)&(#\\w{6})");
-    private static final FileConfiguration config = Config.getSettings();
-    private static final FileConfiguration messages = Config.getMessages();
     private static final SoSeller main = SoSeller.getPlugin();
 
     public static String getStringByList(List<String> list) {
@@ -41,7 +39,7 @@ public class Utils {
 
         msg = ChatColor.translateAlternateColorCodes('&', msg);
         Matcher matcher = HEX_PATTERN.matcher(msg);
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         while (matcher.find()) {
             String hex = matcher.group(1);
@@ -63,9 +61,7 @@ public class Utils {
 
     public static boolean hasPerm(CommandSender sender, String perm) {
         if (!sender.hasPermission(perm)) {
-            String def = "&cУ вас недостаточно прав";
-            String msg = messages.getString("have_no_perms", def);
-            sender.sendMessage(convert(msg));
+            sender.sendMessage(convert(Config.messages().haveNoPerms()));
             return false;
         }
         return true;
@@ -83,15 +79,8 @@ public class Utils {
         });
     }
 
-    public static void sendMSG(CommandSender p, String path, String def, String arg) {
-        String msg = messages.getString(path, def);
+    public static void sendMSG(CommandSender p, String msg, String arg) {
         msg = msg.replace("{object}", arg);
-        msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) p, msg);
-        p.sendMessage(Utils.convert(msg));
-    }
-
-    public static void sendMSG(CommandSender p, String path, String def) {
-        String msg = messages.getString(path, def);
         msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) p, msg);
         p.sendMessage(Utils.convert(msg));
     }
@@ -114,7 +103,7 @@ public class Utils {
     }
 
     public static void playSound(Player p, String path) {
-        String value = config.getString("sounds." + path, "none");
+        String value = Config.settings().sounds().get(path).toString();
         List<String> params = Arrays.asList(value.split(";"));
         if (value.equalsIgnoreCase("none")) return;
         Sound sound = Sound.valueOf(params.get(0));

@@ -3,10 +3,14 @@ package org.sausagedev.soseller.utils;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.sausagedev.soseller.Configuration.Config;
+import org.sausagedev.soseller.Configuration.data.GuiField;
+import org.sausagedev.soseller.Configuration.data.MessagesField;
+import org.sausagedev.soseller.Configuration.data.SettingsField;
 import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.gui.CustomHolder;
 
@@ -19,41 +23,45 @@ import java.util.concurrent.CompletableFuture;
 public class MenuUtils {
 
     public static Inventory generate(Player p, String menu) {
-        FileConfiguration config = Config.getMenu(menu);
-        FileConfiguration main = Config.getSettings();
-        FileConfiguration messages = Config.getMessages();
-        String title = config.getString("title", "&aСкупщик");
+        GuiField menuSettings = Config.guis().get(menu);
+        if (menuSettings == null) {
+            System.out.println("menuSettings for " + menu + " is null");
+            return null;
+        }
+        SettingsField settings = Config.settings();
+        MessagesField messages = Config.messages();
+        String title = menuSettings.title();
         title = PlaceholderAPI.setPlaceholders(p, title);
-        int size = config.getInt("size", 54);
+        int size = menuSettings.size();
         Inventory inv = Bukkit.createInventory(new CustomHolder(), size, Utils.convert(title));
 
         CompletableFuture.runAsync(() -> {
             UUID uuid = p.getUniqueId();
             DataManager.PlayerData playerData = DataManager.search(uuid);
             double boost = playerData.getBoost();
-            double globalBoost = main.getDouble("global_boost", 1);
+            double globalBoost = Config.settings().globalBoost();
 
-            Map<String, Object> icons = config.getConfigurationSection("icons").getValues(false);
-            for (String icon : icons.keySet()) {
-                StringBuilder path = new StringBuilder("icons." + icon + ".");
-                String function = config.getString(path + "function", "none").toLowerCase();
+            ConfigurationSection icons = menuSettings.icons();
+            for (String icon : icons.getValues(false).keySet()) {
+                StringBuilder path = new StringBuilder(icon + ".");
+                String function = icons.getString(path + "function", "none").toLowerCase();
                 boolean isLoadItems = function.equals("load_items");
                 boolean isLoadAutoSellItems = function.equals("load_autosell");
-                List<String> items = config.getStringList(path + "items");
-                List<Integer> slots = config.getIntegerList(path + "slots");
+                List<String> items = icons.getStringList(path + "items");
+                List<Integer> slots = icons.getIntegerList(path + "slots");
 
                 int price = 0;
-                Map<String, Object> boosts = main.getConfigurationSection("boosts").getValues(false);
-                for (String key : boosts.keySet()) {
+                ConfigurationSection boosts = settings.boosts();
+                for (String key : boosts.getValues(false).keySet()) {
                     if (key.equalsIgnoreCase("message")) continue;
-                    Map<String, Object> boostParams = main.getConfigurationSection("boosts." + key).getValues(false);
+                    Map<String, Object> boostParams = boosts.getConfigurationSection(key).getValues(false);
                     if (boost >= Integer.parseInt(key)) continue;
                     price = (int) boostParams.get("price");
                     break;
                 }
 
                 if (function.equals("auto-sell")) {
-                    price = main.getInt("auto-sell.cost");
+                    price = (int) settings.autoSell().get("cost");
                     boolean isBought = playerData.isAutoSellBought();
                     if (isBought) {
                         path.append("bought.");
@@ -64,12 +72,12 @@ public class MenuUtils {
                     }
                 }
 
-                String displayName = config.getString(path + "name", "&e" + icon);
+                String displayName = icons.getString(path + "name", "&e" + icon);
                 displayName = displayName.replace("{boost}", String.valueOf(boost));
                 displayName = displayName.replace("{globalboost}", String.valueOf(globalBoost));
                 displayName = displayName.replace("{price}", String.valueOf(price));
 
-                List<String> lore = config.getStringList(path + "lore");
+                List<String> lore = icons.getStringList(path + "lore");
                 List<String> lines = new ArrayList<>();
                 for (String line : lore) {
                     line = line.replace("{boost}", String.valueOf(boost));
@@ -95,10 +103,10 @@ public class MenuUtils {
                 } else {
                     for (String i : new ArrayList<>(items)) {
                         if (slots.isEmpty()) break;
-                        Map<String, Object> materials = messages.getConfigurationSection("materials").getValues(false);
-                        String itemEnabled = AutoSell.isEnabled(uuid, Material.valueOf(i)) ? "allow" : "deny";
+                        Map<String, Object> materials = messages.materials();
+                        boolean itemEnabled = AutoSell.isEnabled(uuid, Material.valueOf(i));
                         String translatedItem = materials.containsKey(i) ? materials.get(i).toString() : i;
-                        String msg = messages.getString(itemEnabled + "-autosell", "null");
+                        String msg = itemEnabled ? messages.allowAutosell() : messages.denyAutosell();
                         String d2 = displayName.replace("{item_type}", i);
                         d2 = d2.replace("{item_type_display}", translatedItem);
                         d2 = d2.replace("{can_autosell}", msg);

@@ -12,7 +12,6 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
-import org.sausagedev.soseller.functions.Selling;
 import org.sausagedev.soseller.utils.*;
 
 import java.util.Arrays;
@@ -65,14 +64,10 @@ public class MenuListener implements Listener {
         Player p = (Player) e.getPlayer();
         if (Utils.isDefaultInv(inv)) return;
         MenuDetect.remove(p);
-        if (!Config.getSettings().getBoolean("sell_on_close_inv", false)) {
-            Arrays.asList(inv.getContents()).forEach(item -> {
-                if (item == null || item.getType().equals(Material.AIR)) return;
-                else if (new ItemBuilder(item).hasFunction()) return;
-                Utils.getItem(p, item, item.getAmount());
-            });
-            return;
-        }
-        new Selling().sellItems(p, Arrays.asList(inv.getContents()), true);
+        Arrays.asList(inv.getContents()).forEach(item -> {
+            if (item == null || item.getType().equals(Material.AIR)) return;
+            else if (new ItemBuilder(item).hasFunction()) return;
+            Utils.getItem(p, item, item.getAmount());
+        });
     }
 }

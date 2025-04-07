@@ -2,27 +2,17 @@ package org.sausagedev.soseller.utils;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.sausagedev.soseller.Configuration.Config;
 
 import java.util.*;
 
 public class Icons {
-    public String findIcon(String function, FileConfiguration config) {
-        ConfigurationSection section = config.getConfigurationSection("icons");
-        if (section == null) return null;
-        Map<String, Object> icons = section.getValues(false);
-        for (String icon : icons.keySet()) {
-            String tag = (String) icons.get(icon + ".function");
-            if (tag != null && tag.equalsIgnoreCase(function)) return icon;
-        }
-        return null;
-    }
 
     public static ItemStack prepareDefaultItem(String path, String menu) {
-        ConfigurationSection section = Config.getMenu(menu).getConfigurationSection(path);
+        ConfigurationSection section = Config.guis().get(menu).icons().getConfigurationSection(path);
         if (section == null) return null;
         String materialID = section.getString("material", "BEDROCK");
         Material material = Material.matchMaterial(materialID);
