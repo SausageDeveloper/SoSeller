@@ -1,4 +1,4 @@
-package org.sausagedev.soseller.Configuration.data;
+package org.sausagedev.soseller.сonfiguration.data;
 
 import org.bukkit.configuration.ConfigurationSection;
 

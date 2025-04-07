@@ -2,7 +2,7 @@ package org.sausagedev.soseller.functions;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.sausagedev.soseller.Configuration.Config;
+import org.sausagedev.soseller.сonfiguration.Config;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.utils.*;

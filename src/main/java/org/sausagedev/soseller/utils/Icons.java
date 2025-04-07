@@ -5,7 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.sausagedev.soseller.Configuration.Config;
+import org.sausagedev.soseller.сonfiguration.Config;
 
 import java.util.*;
 

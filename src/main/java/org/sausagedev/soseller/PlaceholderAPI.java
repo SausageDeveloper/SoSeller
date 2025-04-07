@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.sausagedev.soseller.database.DataManager;
-import org.sausagedev.soseller.Configuration.Config;
+import org.sausagedev.soseller.сonfiguration.Config;
 
 import java.util.Map;
 

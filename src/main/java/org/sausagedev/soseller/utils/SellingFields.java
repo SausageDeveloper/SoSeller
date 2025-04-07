@@ -1,6 +1,6 @@
 package org.sausagedev.soseller.utils;
 
-import org.sausagedev.soseller.Configuration.Config;
+import org.sausagedev.soseller.сonfiguration.Config;
 
 import java.util.Collections;
 import java.util.List;

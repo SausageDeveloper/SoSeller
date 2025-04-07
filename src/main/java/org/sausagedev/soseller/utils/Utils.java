@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.sausagedev.soseller.Configuration.Config;
+import org.sausagedev.soseller.сonfiguration.Config;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.gui.CustomHolder;
 

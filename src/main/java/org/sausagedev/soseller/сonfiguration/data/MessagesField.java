@@ -1,4 +1,4 @@
-package org.sausagedev.soseller.Configuration.data;
+package org.sausagedev.soseller.сonfiguration.data;
 
 import java.util.List;
 import java.util.Map;

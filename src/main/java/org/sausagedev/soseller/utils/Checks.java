@@ -1,7 +1,7 @@
 package org.sausagedev.soseller.utils;
 
 import org.bukkit.entity.Player;
-import org.sausagedev.soseller.Configuration.Config;
+import org.sausagedev.soseller.сonfiguration.Config;
 import su.nightexpress.coinsengine.api.currency.Currency;
 
 public class Checks {
