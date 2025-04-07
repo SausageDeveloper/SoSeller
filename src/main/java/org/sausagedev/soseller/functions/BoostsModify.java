@@ -13,7 +13,6 @@ import su.nightexpress.coinsengine.api.currency.Currency;
 import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class BoostsModify {
     private final SoSeller main = SoSeller.getPlugin();
@@ -64,20 +63,18 @@ public class BoostsModify {
 
         int finalPrice = price;
         String finalVault = vault;
-        CompletableFuture.runAsync(() -> {
-            switch (finalVault) {
-                case "playerpoints":
-                    main.getPP().take(uuid, finalPrice);
-                    break;
-                case "vault":
-                    main.getEconomy().withdrawPlayer(p, finalPrice);
-                    break;
-                case "items":
-                    playerData.takeItems(finalPrice);
-                    break;
-            }
-            playerData.addBoost(0.1);
-        });
+        switch (finalVault) {
+            case "playerpoints":
+                main.getPP().take(uuid, finalPrice);
+                break;
+            case "vault":
+                main.getEconomy().withdrawPlayer(p, finalPrice);
+                break;
+            case "items":
+                playerData.takeItems(finalPrice);
+                break;
+        }
+        playerData.addBoost(0.1);
 
         String msg = Config.messages().buyBoost();
         DecimalFormat df = new DecimalFormat("#.0");

@@ -11,7 +11,6 @@ import org.sausagedev.soseller.utils.Utils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class Selling {
     private final SoSeller main = SoSeller.getPlugin();
@@ -43,7 +42,7 @@ public class Selling {
         if (profit == 0 || items == 0) return;
 
         int finalItems = items;
-        CompletableFuture.runAsync(() -> playerData.addItems(finalItems));
+        playerData.addItems(finalItems);
         Utils.playSound(p, "onSellItems");
 
         if (!withMessage) return;
@@ -70,7 +69,7 @@ public class Selling {
         main.getEconomy().depositPlayer(p.getName(), money);
         profit += (int) money;
 
-        CompletableFuture.runAsync(() -> playerData.addItems(item.getAmount()));
+        playerData.addItems(item.getAmount());
         item.setAmount(0);
 
 

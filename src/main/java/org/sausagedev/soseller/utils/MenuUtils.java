@@ -24,10 +24,6 @@ public class MenuUtils {
 
     public static Inventory generate(Player p, String menu) {
         GuiField menuSettings = Config.guis().get(menu);
-        if (menuSettings == null) {
-            System.out.println("menuSettings for " + menu + " is null");
-            return null;
-        }
         SettingsField settings = Config.settings();
         MessagesField messages = Config.messages();
         String title = menuSettings.title();
