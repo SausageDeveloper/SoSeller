@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.sausagedev.soseller.database.DataManager;
-import org.sausagedev.soseller.сonfiguration.Config;
+import org.sausagedev.soseller.configuration.Config;
 
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "2.0.1";
+        return "2.0.2";
     }
 
     @Override

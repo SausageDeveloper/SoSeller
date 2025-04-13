@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.sausagedev.soseller.сonfiguration.Config;
+import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.functions.AutoSellModify;
 import org.sausagedev.soseller.functions.BoostsModify;

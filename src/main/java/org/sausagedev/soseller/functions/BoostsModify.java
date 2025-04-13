@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.utils.Checks;
-import org.sausagedev.soseller.сonfiguration.Config;
+import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.utils.Utils;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;

@@ -16,7 +16,7 @@ import org.sausagedev.soseller.listeners.AutoSellListener;
 import org.sausagedev.soseller.listeners.FuctionsListener;
 import org.sausagedev.soseller.listeners.MenuListener;
 import org.sausagedev.soseller.utils.AutoSell;
-import org.sausagedev.soseller.сonfiguration.Config;
+import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.utils.Utils;
 
 import java.io.File;

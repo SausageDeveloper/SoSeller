@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.database.DataManager;
-import org.sausagedev.soseller.сonfiguration.Config;
+import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.utils.ItemBuilder;
 import org.sausagedev.soseller.utils.Utils;
 
