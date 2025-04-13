@@ -20,7 +20,7 @@ public class BoostsModify {
     public void buyBoost(Player p) {
         Checks checks = new Checks(p);
         UUID uuid = p.getUniqueId();
-        DataManager.PlayerData playerData = DataManager.search(uuid);
+        DataManager.PlayerData playerData = DataManager.search(uuid), old = playerData.clone();
         int balance = 0;
         int price = 0;
         double boost = playerData.getBoost();
@@ -75,6 +75,7 @@ public class BoostsModify {
                 break;
         }
         playerData.addBoost(0.1);
+        DataManager.replace(old, playerData);
 
         String msg = Config.messages().buyBoost();
         DecimalFormat df = new DecimalFormat("#.0");

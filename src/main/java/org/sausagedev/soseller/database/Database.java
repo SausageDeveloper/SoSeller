@@ -16,7 +16,7 @@ public class Database {
     private static final SoSeller main = SoSeller.getPlugin();
     private static Connection connection;
 
-    public Database(File database) {
+    public static void initialize(File database) {
         try {
             Database.connection = DriverManager.getConnection("jdbc:sqlite:" + database);
             Statement statement = connection.createStatement();

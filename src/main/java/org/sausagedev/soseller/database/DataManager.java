@@ -33,9 +33,7 @@ public class DataManager {
 
     public static void importData() {
         Database.getUUIDs().forEach(uuid -> {
-            Player p = Bukkit.getPlayer(uuid);
-            if (p == null) return;
-            PlayerData playerData = new PlayerData(p);
+            PlayerData playerData = new PlayerData(uuid);
             playerData.setItems(Database.getItems(uuid))
                     .setBoost(Database.getBoost(uuid))
                     .setAutoSellBought(Database.isBoughtAutoSell(uuid));
@@ -55,14 +53,19 @@ public class DataManager {
 
     public static class PlayerData implements Cloneable {
         final UUID uuid;
-        final String nick;
         int items;
         double boost;
         boolean autoSell;
 
         public PlayerData(Player p) {
             uuid = p.getUniqueId();
-            nick = p.getDisplayName();
+            items = 0;
+            boost = 1;
+            autoSell = false;
+        }
+
+        public PlayerData(UUID uuid) {
+            this.uuid = uuid;
             items = 0;
             boost = 1;
             autoSell = false;

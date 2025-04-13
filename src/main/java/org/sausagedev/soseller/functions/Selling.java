@@ -16,7 +16,7 @@ public class Selling {
     private final SoSeller main = SoSeller.getPlugin();
 
     public void sellItems(Player p, List<ItemStack> itemList, boolean withMessage) {
-        DataManager.PlayerData playerData = DataManager.search(p.getUniqueId());
+        DataManager.PlayerData playerData = DataManager.search(p.getUniqueId()), old = playerData.clone();
         double boost = playerData.getBoost();
         double globalBoost = Config.settings().globalBoost();
         Map<String, Object> priceList = Config.settings().sellItems();
@@ -43,6 +43,7 @@ public class Selling {
 
         int finalItems = items;
         playerData.addItems(finalItems);
+        DataManager.replace(old, playerData);
         Utils.playSound(p, "onSellItems");
 
         if (!withMessage) return;

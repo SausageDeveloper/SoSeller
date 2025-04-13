@@ -29,10 +29,10 @@ help:
 config_reload: "&8 ┃&f Конфиг перезагружен"
 
 # Сообщение при наличии новой версии плагина
-old_version: "Вышла новая версия {version}! Ссылка: https://www.spigotmc.org/resources/soseller.121023/"
+old_version: "Вышла новая версия SoSeller {version}! Ссылка: https://www.spigotmc.org/resources/soseller.121023/"
 
 # Сообщение при использовании последней версии плагина
-last_version: "Вы используете последнюю версию!"
+last_version: "Вы используете последнюю версию SoSeller!"
 
 
 # <---------------------------------------->

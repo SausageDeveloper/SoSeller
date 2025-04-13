@@ -29,10 +29,10 @@ help:
 config_reload: "&8 ┃&f Config reloaded"
 
 # Message when a new plugin version is available
-old_version: "A new version {version} is out! Link: https://www.spigotmc.org/resources/soseller.121023/"
+old_version: "A new version SoSeller {version} is out! Link: https://www.spigotmc.org/resources/soseller.121023/"
 
 # Message when using the latest plugin version
-last_version: "You are using the latest version!"
+last_version: "You are using the latest version of SoSeller!"
 
 
 # <---------------------------------->
