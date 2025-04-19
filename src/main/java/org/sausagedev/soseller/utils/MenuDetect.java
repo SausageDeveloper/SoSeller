@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 public class MenuDetect {
@@ -16,10 +15,6 @@ public class MenuDetect {
 
     public static String getMenu(UUID uuid) {
         return menu.get(uuid);
-    }
-
-    public static Set<UUID> getViewers() {
-        return menu.keySet();
     }
 
     public static void remove(Player p) {

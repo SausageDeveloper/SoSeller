@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.SoSeller;
+import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.gui.CustomHolder;
 
 import java.io.BufferedReader;
@@ -81,7 +81,7 @@ public class Utils {
 
     public static void sendMSG(CommandSender p, String msg, String arg) {
         msg = msg.replace("{object}", arg);
-        msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) p, msg);
+        if (SoSeller.usePAPI()) msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) p, msg);
         p.sendMessage(Utils.convert(msg));
     }
 

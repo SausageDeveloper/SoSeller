@@ -2,8 +2,9 @@ package org.sausagedev.soseller.functions;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.SoSeller;
+import org.sausagedev.soseller.configuration.Config;
+import org.sausagedev.soseller.configuration.data.SettingsField;
 import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.utils.*;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
@@ -17,7 +18,8 @@ public class AutoSellModify {
         Checks checks = new Checks(p);
         UUID uuid = p.getUniqueId();
         DataManager.PlayerData playerData = DataManager.search(uuid), old = playerData.clone();
-        String vault = Config.settings().autoSell().get("value").toString().toLowerCase();
+        SettingsField settings = Config.settings();
+        String vault = settings.autoSell().get("value").toString().toLowerCase();
         int balance = 0;
 
         if (vault.contains("coinsengine:")) {
@@ -34,7 +36,7 @@ public class AutoSellModify {
             default -> balance;
         };
 
-        int price = (int) Config.settings().autoSell().get("cost");
+        int price = (int) settings.autoSell().get("cost");
         if (!checks.checkBalance(balance, price)) return;
 
         if (vault.toLowerCase().contains("coinsengine:")) {

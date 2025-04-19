@@ -13,7 +13,7 @@ public class Checks {
 
     public boolean checkBalance(int balance, int price) {
         if (balance < price) {
-            String msg = Config.messages().balanceEror();
+            String msg = Config.messages().balanceError();
             msg = msg.replace("{object}", String.valueOf(balance));
             msg = msg.replace("{price}", String.valueOf(price));
             p.sendMessage(Utils.convert(msg));
@@ -25,7 +25,7 @@ public class Checks {
 
     public boolean vaultExists(String vault) {
         if (vault == null) {
-            p.sendMessage(Utils.convert(Config.messages().balanceEror()));
+            p.sendMessage(Utils.convert(Config.messages().balanceError()));
             return false;
         }
         return true;
@@ -33,7 +33,7 @@ public class Checks {
 
     public boolean gotBoostsLimit(int price, double boost) {
         if (price != 0) return false;
-        String msg = Config.messages().balanceEror();
+        String msg = Config.messages().balanceError();
         msg = msg.replace("{object}", String.valueOf(boost));
         p.sendMessage(Utils.convert(msg));
         return true;
@@ -41,7 +41,7 @@ public class Checks {
 
     public boolean checkCurrencyAbsence(Currency currency) {
         if (currency == null) return true;
-        p.sendMessage(Utils.convert(Config.messages().balanceEror()));
+        p.sendMessage(Utils.convert(Config.messages().balanceError()));
         return false;
     }
 }

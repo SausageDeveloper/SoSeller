@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.sausagedev.soseller.bstats.Metrics;
 import org.sausagedev.soseller.commands.*;
+import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.database.Database;
 import org.sausagedev.soseller.listeners.AutoSellListener;
@@ -18,7 +19,6 @@ import org.sausagedev.soseller.listeners.CheckUpdateListener;
 import org.sausagedev.soseller.listeners.FuctionsListener;
 import org.sausagedev.soseller.listeners.MenuListener;
 import org.sausagedev.soseller.utils.AutoSell;
-import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.utils.Utils;
 
 import java.io.File;
@@ -29,6 +29,7 @@ public final class SoSeller extends JavaPlugin {
     private Economy econ;
     private PlayerPointsAPI ppAPI;
     private static SoSeller plugin;
+    private static boolean usePAPI = false;
 
     @Override
     public void onEnable() {
@@ -79,6 +80,7 @@ public final class SoSeller extends JavaPlugin {
         }
         if (plManager.getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPI().register();
+            usePAPI = true;
         }
     }
 
@@ -155,5 +157,9 @@ public final class SoSeller extends JavaPlugin {
 
     public static SoSeller getPlugin() {
         return plugin;
+    }
+
+    public static boolean usePAPI() {
+        return usePAPI;
     }
 }

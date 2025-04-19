@@ -6,8 +6,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.sausagedev.soseller.gui.Menu;
 import org.sausagedev.soseller.configuration.Config;
+import org.sausagedev.soseller.configuration.data.MessagesField;
+import org.sausagedev.soseller.gui.Menu;
 import org.sausagedev.soseller.utils.Utils;
 
 import java.util.List;
@@ -35,14 +36,15 @@ public class Commands implements CommandExecutor {
             return true;
         }
         if (!Utils.hasPerm(sender, "soseller.admin")) return true;
+        MessagesField messages = Config.messages();
         switch (args[0].toLowerCase()) {
             case "help":
-                List<String> list = Config.messages().help();
+                List<String> list = messages.help();
                 sender.sendMessage(Utils.getStringByList(list));
                 return true;
             case "reload":
                 new Config();
-                sender.sendMessage(Utils.convert(Config.messages().configReload()));
+                sender.sendMessage(Utils.convert(messages.configReload()));
             case "admin":
                 if (args.length < 2) return true;
                 switch (args[1].toLowerCase()) {

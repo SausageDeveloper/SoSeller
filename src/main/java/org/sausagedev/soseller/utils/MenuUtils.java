@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.configuration.data.GuiField;
 import org.sausagedev.soseller.configuration.data.MessagesField;
@@ -27,7 +28,7 @@ public class MenuUtils {
         SettingsField settings = Config.settings();
         MessagesField messages = Config.messages();
         String title = menuSettings.title();
-        title = PlaceholderAPI.setPlaceholders(p, title);
+        if (SoSeller.usePAPI()) title = PlaceholderAPI.setPlaceholders(p, title);
         int size = menuSettings.size();
         Inventory inv = Bukkit.createInventory(new CustomHolder(), size, Utils.convert(title));
 
@@ -91,9 +92,14 @@ public class MenuUtils {
                 if (!isLoadItems && !isLoadAutoSellItems) {
                     displayName = Utils.convert(displayName);
                     List<String> l2 = new ArrayList<>();
-                    lines.forEach(line -> l2.add(PlaceholderAPI.setPlaceholders(p, Utils.convert(line))));
+                    for (String line : lines) {
+                        if (SoSeller.usePAPI()) line = PlaceholderAPI.setPlaceholders(p, line);
+                        l2.add(Utils.convert(line));
+                    }
 
-                    itemBuilder.name(PlaceholderAPI.setPlaceholders(p, displayName)).lore(l2).function(function);
+                    itemBuilder.lore(l2).function(function);
+                    if (SoSeller.usePAPI()) displayName = PlaceholderAPI.setPlaceholders(p, displayName);
+                    itemBuilder.name(displayName);
 
                     slots.forEach(slot -> inv.setItem(slot, itemBuilder.item()));
                 } else {
@@ -106,14 +112,14 @@ public class MenuUtils {
                         String d2 = displayName.replace("{item_type}", i);
                         d2 = d2.replace("{item_type_display}", translatedItem);
                         d2 = d2.replace("{can_autosell}", msg);
-                        d2 = PlaceholderAPI.setPlaceholders(p, d2);
+                        if (SoSeller.usePAPI()) d2 = PlaceholderAPI.setPlaceholders(p, d2);
                         d2 = Utils.convert(d2);
                         List<String> l2 = new ArrayList<>();
                         lines.forEach(line -> {
                             line = line.replace("{item_type}", i);
                             line = line.replace("{item_type_display}", translatedItem);
                             line = line.replace("{can_autosell}", msg);
-                            line = PlaceholderAPI.setPlaceholders(p, line);
+                            if (SoSeller.usePAPI()) line = PlaceholderAPI.setPlaceholders(p, line);
                             l2.add(Utils.convert(line));
                         });
 

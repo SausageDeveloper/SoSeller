@@ -2,10 +2,10 @@ package org.sausagedev.soseller.configuration;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.sausagedev.soseller.SoSeller;
 import org.sausagedev.soseller.configuration.data.GuiField;
 import org.sausagedev.soseller.configuration.data.MessagesField;
 import org.sausagedev.soseller.configuration.data.SettingsField;
-import org.sausagedev.soseller.SoSeller;
 
 import java.io.File;
 import java.io.IOException;

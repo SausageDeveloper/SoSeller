@@ -5,17 +5,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.sausagedev.soseller.SoSeller;
+import org.sausagedev.soseller.configuration.Config;
+import org.sausagedev.soseller.configuration.data.MessagesField;
 import org.sausagedev.soseller.database.DataManager;
 import org.sausagedev.soseller.utils.AutoSell;
-import org.sausagedev.soseller.configuration.Config;
 import org.sausagedev.soseller.utils.Utils;
 
 public class AutoSellCommand {
 
     public void execute(CommandSender sender, String[] args) {
         Player t = Bukkit.getPlayer(args[2]);
+        MessagesField messages = Config.messages();
         if (t == null) {
-            Utils.sendMSG(sender, Config.messages().nullPlayerError(), args[2]);
+            Utils.sendMSG(sender, messages.nullPlayerError(), args[2]);
             return;
         }
         DataManager.PlayerData playerData = DataManager.search(t.getUniqueId()), old = playerData.clone();
@@ -29,14 +32,14 @@ public class AutoSellCommand {
         }
         DataManager.replace(old, playerData);
 
-        String msg = Config.messages().autoSellRemove();
+        String msg = messages.autoSellRemove();
         if (playerData.isAutoSellBought()) {
-            msg = Config.messages().autoSellGive();
+            msg = messages.autoSellGive();
         }
         AutoSell.disable(t.getUniqueId());
 
         msg = msg.replace("{player}", t.getName());
-        if (sender instanceof Player) msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, msg);
+        if (sender instanceof Player && SoSeller.usePAPI()) msg = PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, msg);
         sender.sendMessage(Utils.convert(msg));
     }
 }
