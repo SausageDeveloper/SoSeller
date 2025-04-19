@@ -32,6 +32,7 @@ public class GlobalBoostCommand {
                 Config.setGlobalBoost(res < 1 ? 1 : res);
                 break;
         }
+
         globalBoost = Config.settings().globalBoost();
         String msg = messages.globalBoostModify();
         msg = msg.replace("{amount}", String.valueOf(globalBoost));
