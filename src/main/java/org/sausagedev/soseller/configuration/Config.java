@@ -72,7 +72,8 @@ public class Config {
                 config.getString("auto-sell_remove"),
                 config.getString("auto-sell_give"),
                 config.getString("allow-autosell"),
-                config.getString("deny-autosell"));
+                config.getString("deny-autosell"),
+                config.getString("gui_max_boost"));
     }
 
     public static MessagesField messages() {

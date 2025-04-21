@@ -25,23 +25,25 @@ public class Checks {
 
     public boolean vaultExists(String vault) {
         if (vault == null) {
-            p.sendMessage(Utils.convert(Config.messages().balanceError()));
+            p.sendMessage(Utils.convert(Config.messages().vaultError()));
             return false;
         }
         return true;
     }
 
-    public boolean gotBoostsLimit(int price, double boost) {
+    public boolean getBoostsLimit(int price, double boost) {
         if (price != 0) return false;
-        String msg = Config.messages().balanceError();
+        String msg = Config.messages().maxBoostError();
         msg = msg.replace("{object}", String.valueOf(boost));
         p.sendMessage(Utils.convert(msg));
         return true;
     }
 
     public boolean checkCurrencyAbsence(Currency currency) {
-        if (currency == null) return true;
-        p.sendMessage(Utils.convert(Config.messages().balanceError()));
+        if (currency == null) {
+            p.sendMessage(Utils.convert(Config.messages().vaultError()));
+            return true;
+        }
         return false;
     }
 }

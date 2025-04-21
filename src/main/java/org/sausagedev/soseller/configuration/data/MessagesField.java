@@ -25,8 +25,9 @@ public class MessagesField {
     private final String autoSellGive;
     private final String allowAutosell;
     private final String denyAutosell;
+    private final String guiMaxBoost;
 
-    public MessagesField(List<String> help, Map<String, Object> materials, String configReload, String oldVersion, String lastVersion, String haveNoPerms, String numberFormatError, String nullPlayerError, String balanceError, String maxBoostError, String vaultError, String buyBoost, String buyAutosell, String boostModify, String globalBoostModify, String itemsModify, String sold, String autoSellRemove, String autoSellGive, String allowAutosell, String denyAutosell) {
+    public MessagesField(List<String> help, Map<String, Object> materials, String configReload, String oldVersion, String lastVersion, String haveNoPerms, String numberFormatError, String nullPlayerError, String balanceError, String maxBoostError, String vaultError, String buyBoost, String buyAutosell, String boostModify, String globalBoostModify, String itemsModify, String sold, String autoSellRemove, String autoSellGive, String allowAutosell, String denyAutosell, String guiMaxBoost) {
         this.help = help;
         this.materials = materials;
         this.configReload = configReload;
@@ -48,6 +49,7 @@ public class MessagesField {
         this.autoSellGive = autoSellGive;
         this.allowAutosell = allowAutosell;
         this.denyAutosell = denyAutosell;
+        this.guiMaxBoost = guiMaxBoost;
     }
 
     public List<String> help() {
@@ -132,5 +134,9 @@ public class MessagesField {
 
     public String denyAutosell() {
         return denyAutosell;
+    }
+
+    public String guiMaxBoost() {
+        return guiMaxBoost;
     }
 }

@@ -60,7 +60,7 @@ public class MenuUtils {
                 if (function.equals("auto-sell")) {
                     price = (int) settings.autoSell().get("cost");
                     boolean isBought = playerData.isAutoSellBought();
-                    if (isBought) {
+                    if (isBought || price == 0) {
                         path.append("bought.");
                         boolean isEnabled = AutoSell.isEnabled(uuid);
                         path = new StringBuilder(isEnabled ? path + "enabled." : path + "disabled.");
@@ -72,14 +72,14 @@ public class MenuUtils {
                 String displayName = icons.getString(path + "name", "&e" + icon);
                 displayName = displayName.replace("{boost}", String.valueOf(boost));
                 displayName = displayName.replace("{globalboost}", String.valueOf(globalBoost));
-                displayName = displayName.replace("{price}", String.valueOf(price));
+                displayName = displayName.replace("{price}", price == 0 ? Config.messages().guiMaxBoost() : String.valueOf(price));
 
                 List<String> lore = icons.getStringList(path + "lore");
                 List<String> lines = new ArrayList<>();
                 for (String line : lore) {
                     line = line.replace("{boost}", String.valueOf(boost));
                     line = line.replace("{globalboost}", String.valueOf(globalBoost));
-                    line = line.replace("{price}", String.valueOf(price));
+                    line = line.replace("{price}", price == 0 ? Config.messages().guiMaxBoost() : String.valueOf(price));
                     lines.add(line);
                 }
 

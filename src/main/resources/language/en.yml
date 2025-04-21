@@ -86,6 +86,10 @@ boost_modify: "&8 ┃&f Set to &e{amount} &fboost &e{player}"
 # {amount} - Last value of global boost
 global_boost_modify: "&8 ┃&f Set to &e{amount} &fglobal boost"
 
+# Text for internal placeholder {boost}
+# Displayed only when the player has reached max boost
+gui_max_boost: "&cMax."
+
 
 # <---------------------------------------------->
 # <---------------------------------------------->

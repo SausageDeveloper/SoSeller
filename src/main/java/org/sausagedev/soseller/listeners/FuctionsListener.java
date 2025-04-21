@@ -70,7 +70,7 @@ public class FuctionsListener implements Listener {
                 return;
             case "auto-sell":
                 boolean bought = playerData.isAutoSellBought();
-                if (bought) {
+                if (bought || (int) Config.settings().autoSell().get("cost") == 0) {
                     boolean isEnabled = AutoSell.isEnabled(uuid);
                     Utils.playSound(p, "onSwapAutoSell");
                     if (isEnabled) {

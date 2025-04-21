@@ -35,7 +35,7 @@ public class BoostsModify {
             break;
         }
 
-        if (vault == null || checks.gotBoostsLimit(price, boost)) return;
+        if (checks.getBoostsLimit(price, boost) || vault == null) return;
         else if (!checks.vaultExists(vault)) return;
         else if (vault.contains("coinsengine:")) {
             String id = vault.replace("coinsengine:", "");
