@@ -28,7 +28,8 @@ public class MenuListener implements Listener {
         Inventory clickedInv = e.getClickedInventory();
         if (e.getClick().equals(ClickType.SHIFT_LEFT)
                 && !slots.contains(topInv.firstEmpty())
-                && !clickedInv.equals(topInv)) e.setCancelled(true);
+                && !clickedInv.equals(topInv)
+                && !Utils.isDefaultInv(clickedInv)) e.setCancelled(true);
         else if (Utils.isDefaultInv(e.getClickedInventory())
                 || slots.contains(e.getSlot())) return;
         e.setCancelled(true);

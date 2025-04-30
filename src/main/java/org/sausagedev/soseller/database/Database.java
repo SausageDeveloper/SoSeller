@@ -25,7 +25,7 @@ public class Database {
                     "nick TEXT, " +
                     "items INTEGER, " +
                     "boost DOUBLE, " +
-                    "autosell BOOLEAN)");
+                    "autosell BOOLEAN, )");
             statement.close();
         } catch (SQLException e) {
             main.getLogger().severe("SQLException error: " + e.getCause());
