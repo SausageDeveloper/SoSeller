@@ -16,7 +16,6 @@ import org.sausagedev.soseller.gui.Menu;
 import org.sausagedev.soseller.utils.*;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 public class FuctionsListener implements Listener {
@@ -44,14 +43,6 @@ public class FuctionsListener implements Listener {
             menu.open(p, f);
             Utils.playSound(p, "onSwapGui");
             return;
-        } else if (f.contains("buy-")) {
-            f = f.replace("buy-", "");
-            List<String> params = Arrays.asList(f.split(";"));
-            int items = playerData.getItems();
-            int requiredItems = Integer.parseInt(params.get(0));
-            int price = Integer.parseInt(params.get(1));
-            if (items < requiredItems) return;
-            else if (price == 1) return;
         }
 
         switch (f) {

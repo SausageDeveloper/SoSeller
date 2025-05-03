@@ -69,10 +69,8 @@ public class AutoSellModify {
 
     public void offOnAutoSellItem(Player p, Material material) {
         UUID uuid = p.getUniqueId();
-        DataManager.PlayerData playerData = DataManager.search(uuid);
         boolean itemEnabled = AutoSell.isEnabled(uuid, material);
-        if (!playerData.isAutoSellBought()) return;
-        else if (itemEnabled) {
+        if (itemEnabled) {
             AutoSell.disableMaterial(uuid, material);
             return;
         }

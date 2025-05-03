@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -26,11 +25,12 @@ public class MenuListener implements Listener {
         List<Integer> slots = SellingFields.getSlots(MenuDetect.getMenu(e.getWhoClicked().getUniqueId()));
         Inventory topInv = p.getOpenInventory().getTopInventory();
         Inventory clickedInv = e.getClickedInventory();
-        if (e.getClick().equals(ClickType.SHIFT_LEFT)
+        if (e.getClick().isShiftClick()
                 && !slots.contains(topInv.firstEmpty())
+                && clickedInv != null
                 && !clickedInv.equals(topInv)
-                && !Utils.isDefaultInv(clickedInv)) e.setCancelled(true);
-        else if (Utils.isDefaultInv(e.getClickedInventory())
+                && !Utils.isDefaultInv(topInv)) e.setCancelled(true);
+        else if (Utils.isDefaultInv(clickedInv)
                 || slots.contains(e.getSlot())) return;
         e.setCancelled(true);
     }
@@ -40,11 +40,9 @@ public class MenuListener implements Listener {
         if (Utils.isDefaultInv(e.getInventory())) return;
         List<Integer> slots = SellingFields.getSlots(MenuDetect.getMenu(e.getWhoClicked().getUniqueId()));
         for (Integer slot : e.getInventorySlots()) {
-            if (!slots.contains(slot)) {
-                e.setCancelled(true);
-                return;
-            }
+            if (slots.contains(slot)) return;
         }
+        e.setCancelled(true);
     }
 
     @EventHandler
