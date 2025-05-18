@@ -1,7 +1,7 @@
 name: SoSeller
 version: '${project.version}'
 main: org.sausagedev.soseller.SoSeller
-api-version: '1.16'
+api-version: '1.19'
 load: STARTUP
 softdepend:
   - PlayerPoints

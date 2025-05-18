@@ -44,7 +44,7 @@ public class Commands implements CommandExecutor {
                 return true;
             case "reload":
                 new Config();
-                sender.sendMessage(Utils.convert(messages.configReload()));
+                sender.sendMessage(Utils.convert(Config.messages().configReload()));
             case "admin":
                 if (args.length < 2) return true;
                 switch (args[1].toLowerCase()) {
