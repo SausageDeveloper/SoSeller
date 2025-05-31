@@ -38,12 +38,4 @@ public class Checks {
         p.sendMessage(Utils.convert(msg));
         return true;
     }
-
-    public boolean checkCurrencyAbsence(Currency currency) {
-        if (currency == null) {
-            p.sendMessage(Utils.convert(Config.messages().vaultError()));
-            return true;
-        }
-        return false;
-    }
 }

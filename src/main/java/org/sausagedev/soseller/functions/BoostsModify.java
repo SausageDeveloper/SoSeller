@@ -40,8 +40,10 @@ public class BoostsModify {
         else if (vault.contains("coinsengine:")) {
             String id = vault.replace("coinsengine:", "");
             Currency currency = CoinsEngineAPI.getCurrency(id);
-            if (!checks.checkCurrencyAbsence(currency)) return;
-            assert currency != null;
+            if (currency == null) {
+                p.sendMessage(Utils.convert(Config.messages().vaultError()));
+                return;
+            }
             balance = (int) CoinsEngineAPI.getBalance(p, currency);
         }
 
@@ -56,8 +58,10 @@ public class BoostsModify {
         else if (vault.toLowerCase().contains("coinsengine:")) {
             String id = vault.toLowerCase().replace("coinsengine:", "");
             Currency currency = CoinsEngineAPI.getCurrency(id);
-            if (!checks.checkCurrencyAbsence(currency)) return;
-            assert currency != null;
+            if (currency == null) {
+                p.sendMessage(Utils.convert(Config.messages().vaultError()));
+                return;
+            }
             CoinsEngineAPI.removeBalance(p, currency, price);
         }
 
