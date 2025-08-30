@@ -1,7 +1,5 @@
 package org.sausagedev.soseller.database;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.sausagedev.soseller.SoSeller;
 
 import java.io.File;
@@ -89,12 +87,10 @@ public class Database {
         }
     }
 
-    public static void register(UUID uuid) {
+    public static void register(DataManager.PlayerData playerData) {
         try {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player == null) return;
             PreparedStatement pstm = connection.prepareStatement("SELECT uuid FROM database WHERE uuid = ?");
-            pstm.setString(1, uuid.toString());
+            pstm.setString(1, playerData.getUUID().toString());
             ResultSet rs = pstm.executeQuery();
             if (rs.next()) return;
             PreparedStatement ps = connection.prepareStatement("INSERT INTO database(" +
@@ -103,8 +99,8 @@ public class Database {
                     "items, " +
                     "boost, " +
                     "autosell) VALUES (?, ?, ?, ?, ?)");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, player.getName());
+            ps.setString(1, playerData.getUUID().toString());
+            ps.setString(2, playerData.getName());
             ps.setInt(3, 0);
             ps.setDouble(4, 1);
             ps.setBoolean(5, false);
